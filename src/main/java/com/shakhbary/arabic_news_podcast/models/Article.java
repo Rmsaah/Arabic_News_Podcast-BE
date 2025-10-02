@@ -15,13 +15,13 @@ public class Article {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "author")
+    @Column(name = "author", length = 150)
     private String author;
 
-    @Column(name = "publisher", nullable = false)
+    @Column(name = "publisher", nullable = false, length = 150)
     private String publisher;
 
-    @Column(name = "category")
+    @Column(name = "category", length = 100)
     private String category;
 
     @Column(name = "title", nullable = false, length = 150)

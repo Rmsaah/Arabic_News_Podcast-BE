@@ -15,14 +15,14 @@ public class Audio {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY) //fetch = FetchType.LAZY is recommended for performance; the related entity (e.g., Article) is only loaded from the database when you explicitly call a getter for it.
+    @OneToOne(fetch = FetchType.LAZY) //fetch = FetchType.LAZY is recommended for performance; the related entity (e.g., Article) is only loaded from the database when you explicitly call a getter for it.
     @JoinColumn(name = "article_id", referencedColumnName = "id", nullable = false, unique = true)
     private Article articleId;
 
     @Column(name = "duration", nullable = false)
     private long duration; // in seconds
 
-    @Column(name = "format", nullable = false)
+    @Column(name = "format", nullable = false, length = 20)
     private String format;
 
     @Column(name = "url_path", nullable = false)

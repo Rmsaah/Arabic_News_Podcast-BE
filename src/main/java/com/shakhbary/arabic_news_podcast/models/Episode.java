@@ -15,11 +15,11 @@ public class Episode {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY) //fetch = FetchType.LAZY is recommended for performance; the related entity (e.g., Article) is only loaded from the database when you explicitly call a getter for it.
+    @OneToOne(fetch = FetchType.LAZY) //fetch = FetchType.LAZY is recommended for performance; the related entity (e.g., Article) is only loaded from the database when you explicitly call a getter for it.
     @JoinColumn(name = "article_id", referencedColumnName = "id", nullable = false, unique = true)
     private Article articleId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "audio_id", referencedColumnName = "id", nullable = false, unique = true)
     private Audio audio_id;
 
@@ -31,6 +31,9 @@ public class Episode {
 
     @Column(name = "transcript", nullable = false)
     private String transcript;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @CreatedDate // Tells Spring to auto-populate this on creation
     @Column(name = "created_at", nullable = false, updatable = false)
