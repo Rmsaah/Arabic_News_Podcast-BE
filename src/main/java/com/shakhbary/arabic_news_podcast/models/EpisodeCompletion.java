@@ -6,7 +6,10 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.time.OffsetDateTime;
 
-@Data
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 /*
 EpisodeCompletion, is designed to track a user's progress through an episode, which is a key piece of logic for achieving that Plex/Spotify experience
