@@ -1,10 +1,17 @@
 package com.shakhbary.arabic_news_podcast.models;
 
-import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
 import java.time.OffsetDateTime;
 import java.util.UUID;
+
+import org.springframework.data.annotation.CreatedDate;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Data;
 
 @Data
 @Entity
@@ -14,7 +21,6 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
     @Column(name = "username", nullable = false, unique = true, length = 50)
     private String username;
 
@@ -38,3 +44,17 @@ public class User {
     private OffsetDateTime lastLoginAt;
 
 }
+// @Entity
+// @Table(name = "users")
+// public class User {
+
+//     private boolean enabled = true;
+
+//     @ManyToMany(fetch = FetchType.EAGER)
+//     @JoinTable(
+//         name = "user_roles",
+//         joinColumns = @JoinColumn(name = "user_id"),
+//         inverseJoinColumns = @JoinColumn(name = "role_id")
+//     )
+//     private Set<Role> roles = new HashSet<>();
+// }
