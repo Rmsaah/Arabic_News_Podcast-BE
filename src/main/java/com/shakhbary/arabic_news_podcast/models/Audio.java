@@ -3,10 +3,14 @@ package com.shakhbary.arabic_news_podcast.models;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-@Data
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "audios")
 public class Audio {
@@ -15,9 +19,9 @@ public class Audio {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(fetch = FetchType.LAZY) //fetch = FetchType.LAZY is recommended for performance; the related entity (e.g., Article) is only loaded from the database when you explicitly call a getter for it.
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id", referencedColumnName = "id", nullable = false, unique = true)
-    private Article articleId;
+    private Article article;
 
     @Column(name = "duration", nullable = false)
     private long duration; // in seconds
@@ -31,5 +35,8 @@ public class Audio {
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;
+
+    @OneToOne(mappedBy = "audio")
+    private Episode episode;
 
 }

@@ -3,10 +3,16 @@ package com.shakhbary.arabic_news_podcast.models;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
-@Data
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "episodes")
 public class Episode {
@@ -15,13 +21,13 @@ public class Episode {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(fetch = FetchType.LAZY) //fetch = FetchType.LAZY is recommended for performance; the related entity (e.g., Article) is only loaded from the database when you explicitly call a getter for it.
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id", referencedColumnName = "id", nullable = false, unique = true)
-    private Article articleId;
+    private Article article;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "audio_id", referencedColumnName = "id", nullable = false, unique = true)
-    private Audio audio_id;
+    private Audio audio;
 
     @Column(name = "title", nullable = false, length = 150)
     private String title;
@@ -38,6 +44,9 @@ public class Episode {
     @CreatedDate // Tells Spring to auto-populate this on creation
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;
+
+    @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EpisodeCompletion> completions = new ArrayList<>();
 
 }
 
