@@ -47,6 +47,9 @@ public class User {
     private OffsetDateTime lastLoginAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Rating> ratings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EpisodeCompletion> completions = new ArrayList<>();
 
     /**
