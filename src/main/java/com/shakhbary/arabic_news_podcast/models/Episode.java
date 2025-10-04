@@ -49,5 +49,3 @@ public class Episode {
     private List<EpisodeCompletion> completions = new ArrayList<>();
 
 }
-
-
