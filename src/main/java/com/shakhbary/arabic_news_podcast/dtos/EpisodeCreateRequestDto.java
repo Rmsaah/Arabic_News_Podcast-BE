@@ -9,7 +9,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class EpisodeCreateRequest {
+public class EpisodeCreateRequestDto {
     // Core Episode fields
     @NotBlank(message = "Title is required")
     @Size(max = 250)
