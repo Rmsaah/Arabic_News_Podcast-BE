@@ -44,8 +44,8 @@ public class EpisodeProgress {
     /* DATA */
 
     @CreatedDate
-    @Column(name = "completed_at", nullable = false)
-    private OffsetDateTime completedAt;
+    @Column(name = "last_played_at", nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    private OffsetDateTime lastPlayedAt = OffsetDateTime.now();
 
     // Store exact second where user stopped (primary data)
     @Column(name = "last_position_seconds", nullable = false)
@@ -80,7 +80,7 @@ public class EpisodeProgress {
      */
     public void updatePosition(long positionSeconds) {
         this.lastPositionSeconds = positionSeconds;
-        this.completedAt = OffsetDateTime.now();
+        this.lastPlayedAt = OffsetDateTime.now();
 
         // Auto-mark as completed if user reached 95% or more
         double completionPercentage = calculateCompletionPercentage();
