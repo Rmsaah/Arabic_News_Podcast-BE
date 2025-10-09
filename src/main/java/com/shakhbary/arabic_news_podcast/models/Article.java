@@ -14,12 +14,19 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "articles")
+@Table(name = "articles",
+        indexes = {
+                @Index(name = "idx_article_category", columnList = "category"),
+                @Index(name = "idx_article_author", columnList = "author"),
+                @Index(name = "idx_article_fetched_at", columnList = "fetched_at")
+        })
 public class Article {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    /* DATA */
 
     @Column(name = "author", length = 150)
     private String author;
@@ -49,9 +56,13 @@ public class Article {
     @Column(name = "fetched_at", nullable = false, updatable = false)
     private OffsetDateTime fetchedAt;
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Audio> audioFiles = new ArrayList<>();
+    /* RELATIONAL MAPPINGS */
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Episode> episodes = new ArrayList<>();
+    private List<Audio> audioFiles = new ArrayList<>(); // Article HAS MANY Audio
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Episode> episodes = new ArrayList<>(); // Article HAS MANY Episodes
 }

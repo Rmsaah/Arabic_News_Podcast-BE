@@ -21,6 +21,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    /* DATA */
+
     @Column(name = "username", nullable = false, unique = true, length = 50)
     private String username;
 
@@ -46,11 +48,15 @@ public class User {
     @Column(name = "last_login_at")
     private OffsetDateTime lastLoginAt;
 
+    /* RELATIONAL MAPPINGS */
+
+    @ToString.Exclude
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Rating> ratings = new ArrayList<>();
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<EpisodeCompletion> completions = new ArrayList<>();
+    private List<EpisodeProgress> episodeProgress = new ArrayList<>();
 
     /**
      * Accumulates listening time for the user

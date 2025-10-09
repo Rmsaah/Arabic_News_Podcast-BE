@@ -13,8 +13,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity
 /*
-EpisodeCompletion, is designed to track a user's progress through an episode, which is a key piece of logic for achieving that Plex/Spotify experience
-The constraints ensure that no single user can have more than one EpisodeCompletion record for the same episode.
+EpisodeProgress, is designed to track a user's progress through an episode, which is a key piece of logic for achieving that Plex/Spotify experience
+The constraints ensure that no single user can have more than one EpisodeProgress record for the same episode.
 The combination of user_id and episode_id must be unique.
  */
 @Table(name = "episode_progress",
@@ -29,13 +29,19 @@ public class EpisodeProgress {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    /* FOREIGN KEYS */
+
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "episode_id", nullable = false)
     private Episode episode;
+
+    /* DATA */
 
     @CreatedDate
     @Column(name = "completed_at", nullable = false)
