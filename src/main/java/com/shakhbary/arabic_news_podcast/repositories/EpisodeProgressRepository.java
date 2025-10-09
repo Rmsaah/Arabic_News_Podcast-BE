@@ -28,7 +28,8 @@ public interface EpisodeProgressRepository extends JpaRepository<EpisodeProgress
     @Query("SELECT ep FROM EpisodeProgress ep WHERE ep.user.id = :userId AND ep.lastPositionSeconds > 0 ORDER BY ep.completedAt DESC")
     List<EpisodeProgress> findInProgressEpisodes(@Param("userId") UUID userId);
 
-    @Query("SELECT AVG(ep.completionPercentage) FROM EpisodeProgress ep WHERE ep.episode.id = :episodeId")
+    // Calculate average completion percentage: (lastPositionSeconds / episode.audio.duration)
+    @Query("SELECT AVG(CAST(ep.lastPositionSeconds AS double) / ep.episode.audio.duration) FROM EpisodeProgress ep WHERE ep.episode.id = :episodeId AND ep.episode.audio.duration > 0")
     Double findAverageCompletionForEpisode(@Param("episodeId") UUID episodeId);
 
     @Query("SELECT ep FROM EpisodeProgress ep WHERE ep.episode.id = :episodeId AND ep.isCompleted = false GROUP BY FLOOR(ep.lastPositionSeconds / 60) ORDER BY COUNT(*) DESC")
