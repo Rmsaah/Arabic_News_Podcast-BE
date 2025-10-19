@@ -8,7 +8,6 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class EpisodeCreateRequestDto {
     // Core Episode fields
     @NotBlank(message = "Title is required")

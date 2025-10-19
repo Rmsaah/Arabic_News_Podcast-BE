@@ -12,16 +12,24 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "audios")
+@Table(name = "audios",
+        indexes = {
+                @Index(name = "idx_audio_article_id", columnList = "article_id")
+        })
 public class Audio {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    /* FOREIGN KEYS */
+
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id", referencedColumnName = "id", nullable = false, unique = true)
     private Article article;
+
+    /* DATA */
 
     @Column(name = "duration", nullable = false)
     private long duration; // in seconds
@@ -36,6 +44,9 @@ public class Audio {
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;
 
+    /* RELATIONAL MAPPINGS */
+
+    @ToString.Exclude
     @OneToOne(mappedBy = "audio")
     private Episode episode;
 

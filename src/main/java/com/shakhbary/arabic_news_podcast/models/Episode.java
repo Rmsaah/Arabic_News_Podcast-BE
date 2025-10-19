@@ -14,12 +14,19 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "episodes")
+@Table(name = "episodes",
+        indexes = {
+                @Index(name = "idx_episode_article_id", columnList = "article_id"),
+                @Index(name = "idx_episode_audio_id", columnList = "audio_id"),
+                @Index(name = "idx_episode_created_at", columnList = "created_at")
+        })
 public class Episode {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    /* FOREIGN KEYS */
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id", referencedColumnName = "id", nullable = false, unique = true)
@@ -28,6 +35,8 @@ public class Episode {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "audio_id", referencedColumnName = "id", nullable = false, unique = true)
     private Audio audio;
+
+    /* DATA */
 
     @Column(name = "title", nullable = false, length = 150)
     private String title;
@@ -45,9 +54,14 @@ public class Episode {
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;
 
+    /* RELATIONAL MAPPINGS */
+
+    @ToString.Exclude
     @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<EpisodeCompletion> completions = new ArrayList<>();
+    private List<Rating> ratings = new ArrayList<>();
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "episode", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EpisodeProgress> episodeProgress = new ArrayList<>();
 
 }
-
-

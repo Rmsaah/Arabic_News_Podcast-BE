@@ -12,20 +12,31 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "ratings")
+@Table(name = "ratings",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "episode_id"}),
+        indexes = {
+                @Index(name = "idx_ratings_episode_id", columnList = "episode_id"),
+                @Index(name = "idx_ratings_user_id", columnList = "user_id")
+        })
 public class Rating {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    /* FOREIGN KEYS */
+
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY) //fetch = FetchType.LAZY is recommended for performance; the related entity (e.g., Article) is only loaded from the database when you explicitly call a getter for it.
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, unique = true)
     private User user;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY) //fetch = FetchType.LAZY is recommended for performance; the related entity (e.g., Article) is only loaded from the database when you explicitly call a getter for it.
     @JoinColumn(name = "episode_id", referencedColumnName = "id", nullable = false, unique = true)
     private Episode episode;
+
+    /* DATA */
 
     @Column(name = "rating", nullable = false)
     private int rating; // from 1 to 5
