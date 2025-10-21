@@ -1,8 +1,10 @@
 package com.shakhbary.arabic_news_podcast.services;
 
-import com.shakhbary.arabic_news_podcast.dtos.UserDto;
-
 import java.util.UUID;
+
+import com.shakhbary.arabic_news_podcast.dtos.UserDto;
+import com.shakhbary.arabic_news_podcast.dtos.UserRegistrationRequest;
+import com.shakhbary.arabic_news_podcast.models.User;
 
 /**
  * Service for managing user account operations
@@ -24,4 +26,7 @@ public interface UserService {
      * @return Updated UserDto with new name information
      */
     UserDto updateUserName(UUID userId, String firstName, String lastName);
+
+    User registerNewUser(UserRegistrationRequest registrationRequest);
+
 }
