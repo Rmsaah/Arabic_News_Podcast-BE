@@ -1,5 +1,4 @@
 package com.shakhbary.arabic_news_podcast.models;
-
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -72,6 +71,7 @@ public class User {
     @ToString.Exclude
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EpisodeProgress> episodeProgress = new ArrayList<>();
+    
 
     @Column(name= "enabled" )
     private boolean enabled = true;
@@ -82,33 +82,8 @@ public class User {
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    
     private Set<Role> roles = new HashSet<>();
-
-    @Column(name= "enabled" )
-    private boolean enabled = true;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "user_roles",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
     
-    private Set<Role> roles = new HashSet<>();
-
-    @Column(name= "enabled" )
-    private boolean enabled = true;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "user_roles",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    
-    private Set<Role> roles = new HashSet<>();
-
     /**
      * Accumulates listening time for the user
      * @param additionalSeconds the number of seconds to add to the user's total listening time
