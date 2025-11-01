@@ -3,7 +3,7 @@ package com.shakhbary.arabic_news_podcast.services;
 import java.util.UUID;
 
 import com.shakhbary.arabic_news_podcast.dtos.UserDto;
-import com.shakhbary.arabic_news_podcast.dtos.UserRegistrationRequest;
+import com.shakhbary.arabic_news_podcast.dtos.UserRegistrationRequestDto;
 import com.shakhbary.arabic_news_podcast.models.User;
 
 /**
@@ -27,6 +27,6 @@ public interface UserService {
      */
     UserDto updateUserName(UUID userId, String firstName, String lastName);
 
-    User registerNewUser(UserRegistrationRequest registrationRequest);
+    User registerNewUser(UserRegistrationRequestDto registrationRequest);
 
 }

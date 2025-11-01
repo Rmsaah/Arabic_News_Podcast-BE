@@ -9,10 +9,6 @@ import com.shakhbary.arabic_news_podcast.models.User;
 import com.shakhbary.arabic_news_podcast.repositories.EpisodeProgressRepository;
 import com.shakhbary.arabic_news_podcast.repositories.EpisodeRepository;
 import com.shakhbary.arabic_news_podcast.repositories.UserRepository;
-import com.shakhbary.arabic_news_podcast.services.EpisodeProgressService;
-import com.shakhbary.arabic_news_podcast.services.EpisodeProgressService.EpisodeAnalyticsDto;
-import com.shakhbary.arabic_news_podcast.services.EpisodeProgressService.UserListeningStatsDto;
-import com.shakhbary.arabic_news_podcast.services.EpisodeProgressService.DropOffPoint;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

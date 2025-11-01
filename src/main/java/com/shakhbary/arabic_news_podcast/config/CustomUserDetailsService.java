@@ -1,9 +1,9 @@
 package com.shakhbary.arabic_news_podcast.config;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.shakhbary.arabic_news_podcast.models.User;
+import com.shakhbary.arabic_news_podcast.repositories.UserRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,16 +11,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.shakhbary.arabic_news_podcast.models.User;
-import com.shakhbary.arabic_news_podcast.repositories.UserRepository;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
-
+@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
-    
-    @Autowired
-    private UserRepository userRepository;
 
+    private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

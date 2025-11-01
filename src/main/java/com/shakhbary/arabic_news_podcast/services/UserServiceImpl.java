@@ -1,18 +1,7 @@
 package com.shakhbary.arabic_news_podcast.services;
 
-import java.time.OffsetDateTime;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.shakhbary.arabic_news_podcast.dtos.UserDto;
-import com.shakhbary.arabic_news_podcast.dtos.UserRegistrationRequest;
+import com.shakhbary.arabic_news_podcast.dtos.UserRegistrationRequestDto;
 import com.shakhbary.arabic_news_podcast.exceptions.ResourceNotFoundException;
 import com.shakhbary.arabic_news_podcast.models.Role;
 import com.shakhbary.arabic_news_podcast.models.User;
@@ -20,19 +9,23 @@ import com.shakhbary.arabic_news_podcast.repositories.RoleRepository;
 import com.shakhbary.arabic_news_podcast.repositories.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
-    @Autowired
-    private RoleRepository roleRepository; // Need to create this repository
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository; // Need to create this repository
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional(readOnly = true)
@@ -69,8 +62,9 @@ public class UserServiceImpl implements UserService {
         );
     }
 
-    
-    public User registerNewUser(UserRegistrationRequest registrationRequest) {
+    @Override
+    @Transactional
+    public User registerNewUser(UserRegistrationRequestDto registrationRequest) {
         
         // 1. Check if username/email already exists
         if (userRepository.existsByUsername(registrationRequest.getUsername())) {

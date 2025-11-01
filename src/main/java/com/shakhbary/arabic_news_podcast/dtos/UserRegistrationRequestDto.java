@@ -1,9 +1,11 @@
 package com.shakhbary.arabic_news_podcast.dtos;
 
-import lombok.Data;
+import lombok.*;
 
 @Data // Provides Getters, Setters, toString, etc.
-public class UserRegistrationRequest {
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserRegistrationRequestDto {
     private String username;
     private String email;
     private String password;
