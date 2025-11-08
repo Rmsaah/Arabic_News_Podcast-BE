@@ -44,7 +44,7 @@ public class RatingServiceImpl implements RatingService {
             rating.setEpisode(episode);
         }
         rating.setRating(ratingValue);
-        rating.setRatedAt(OffsetDateTime.now());
+        rating.setRatingDate(OffsetDateTime.now());
 
         rating = ratingRepository.save(rating);
 
