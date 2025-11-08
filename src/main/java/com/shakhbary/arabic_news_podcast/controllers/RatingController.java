@@ -6,6 +6,7 @@ import com.shakhbary.arabic_news_podcast.services.RatingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -23,17 +24,22 @@ public class RatingController {
      * Submit a rating for an episode.
      * Users can rate episodes from 1 (lowest) to 5 (highest).
      * If a user has already rated an episode, the rating will be updated.
+     * Users can only submit ratings on their own behalf.
      *
      * @param request Rating request containing user ID, episode ID, and rating value (1-5)
+     * @param authentication Current authenticated user
      * @return Rating response with confirmation
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RatingResponseDto rateEpisode(@RequestBody @Valid RatingRequestDto request) {
+    public RatingResponseDto rateEpisode(
+            @RequestBody @Valid RatingRequestDto request,
+            Authentication authentication) {
         return ratingService.rateEpisode(
                 request.userId(),
                 request.episodeId(),
-                request.rating()
+                request.rating(),
+                authentication.getName()
         );
     }
 }

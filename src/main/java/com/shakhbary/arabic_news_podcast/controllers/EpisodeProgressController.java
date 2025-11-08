@@ -3,7 +3,6 @@ package com.shakhbary.arabic_news_podcast.controllers;
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeProgressDto;
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeProgressUpdateDto;
 import com.shakhbary.arabic_news_podcast.services.EpisodeProgressService;
-import com.shakhbary.arabic_news_podcast.services.EpisodeProgressService.EpisodeAnalyticsDto;
 import com.shakhbary.arabic_news_podcast.services.EpisodeProgressService.UserListeningStatsDto;
 import com.shakhbary.arabic_news_podcast.services.UserProfileService;
 
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
-
 
 /**
  * REST controller for managing episode playback progress and listening statistics.
@@ -44,15 +42,17 @@ public class EpisodeProgressController {
      *
      * @param userId User ID
      * @param updateDto Progress update data (episode ID, position, etc.)
+     * @param authentication Current authenticated user
      * @return Updated progress information
      */
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public EpisodeProgressDto updateProgress(
             @RequestParam UUID userId,
-            @RequestBody @Valid EpisodeProgressUpdateDto updateDto) {
+            @RequestBody @Valid EpisodeProgressUpdateDto updateDto,
+            Authentication authentication) {
 
-        return episodeProgressService.updateProgress(userId, updateDto);
+        return episodeProgressService.updateProgress(userId, updateDto, authentication.getName());
     }
 
     /**
@@ -61,14 +61,16 @@ public class EpisodeProgressController {
      *
      * @param episodeId Episode ID
      * @param userId User ID
+     * @param authentication Current authenticated user
      * @return Episode progress information
      */
     @GetMapping("/episodes/{episodeId}")
     public EpisodeProgressDto getEpisodeProgress(
             @PathVariable UUID episodeId,
-            @RequestParam UUID userId) {
+            @RequestParam UUID userId,
+            Authentication authentication) {
 
-        return episodeProgressService.getProgress(userId, episodeId);
+        return episodeProgressService.getProgress(userId, episodeId, authentication.getName());
     }
 
     /**
@@ -76,11 +78,14 @@ public class EpisodeProgressController {
      * Returns episodes that the user has started but not completed.
      *
      * @param userId User ID
+     * @param authentication Current authenticated user
      * @return List of in-progress episodes with their current positions
      */
     @GetMapping("/users/{userId}/in-progress")
-    public List<EpisodeProgressDto> getInProgressEpisodes(@PathVariable UUID userId) {
-        return episodeProgressService.getInProgressEpisodes(userId);
+    public List<EpisodeProgressDto> getInProgressEpisodes(
+            @PathVariable UUID userId,
+            Authentication authentication) {
+        return episodeProgressService.getInProgressEpisodes(userId, authentication.getName());
     }
 
     /**
@@ -88,23 +93,14 @@ public class EpisodeProgressController {
      * Returns total listening time, episodes completed, etc.
      *
      * @param userId User ID
+     * @param authentication Current authenticated user
      * @return User's listening statistics
      */
     @GetMapping("/users/{userId}/stats")
-    public UserListeningStatsDto getUserStats(@PathVariable UUID userId) {
-        return episodeProgressService.getUserListeningStats(userId);
-    }
-
-    /**
-     * Get analytics for an episode (admin/content creator endpoint).
-     * Returns statistics like total listens, completion rate, average progress, etc.
-     *
-     * @param episodeId Episode ID
-     * @return Episode analytics data
-     */
-    @GetMapping("/episodes/{episodeId}/analytics")
-    public EpisodeAnalyticsDto getEpisodeAnalytics(@PathVariable UUID episodeId) {
-        return episodeProgressService.getEpisodeAnalytics(episodeId);
+    public UserListeningStatsDto getUserStats(
+            @PathVariable UUID userId,
+            Authentication authentication) {
+        return episodeProgressService.getUserListeningStats(userId, authentication.getName());
     }
 
     // ==========================================

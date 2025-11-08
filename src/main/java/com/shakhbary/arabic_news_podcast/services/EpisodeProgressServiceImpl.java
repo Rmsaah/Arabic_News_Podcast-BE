@@ -13,8 +13,11 @@ import com.shakhbary.arabic_news_podcast.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,9 +32,13 @@ public class EpisodeProgressServiceImpl implements EpisodeProgressService {
 
     @Override
     @Transactional
-    public EpisodeProgressDto updateProgress(UUID userId, EpisodeProgressUpdateDto updateDto) {
+    public EpisodeProgressDto updateProgress(UUID userId, EpisodeProgressUpdateDto updateDto, String requestingUsername) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId));
+
+        // Authorization check: user can only update their own progress
+        validateUserAccess(user.getUsername(), requestingUsername, "update your own progress");
+
         Episode episode = episodeRepository.findById(updateDto.getEpisodeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Episode not found: " + updateDto.getEpisodeId()));
 
@@ -56,7 +63,13 @@ public class EpisodeProgressServiceImpl implements EpisodeProgressService {
 
     @Override
     @Transactional(readOnly = true)
-    public EpisodeProgressDto getProgress(UUID userId, UUID episodeId) {
+    public EpisodeProgressDto getProgress(UUID userId, UUID episodeId, String requestingUsername) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId));
+
+        // Authorization check: user can only view their own progress
+        validateUserAccess(user.getUsername(), requestingUsername, "view your own progress");
+
         EpisodeProgress completion = episodeProgressRepository
                 .findByUserAndEpisode(userId, episodeId)
                 .orElseThrow(() -> new ResourceNotFoundException("No progress found for this episode"));
@@ -66,7 +79,13 @@ public class EpisodeProgressServiceImpl implements EpisodeProgressService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EpisodeProgressDto> getInProgressEpisodes(UUID userId) {
+    public List<EpisodeProgressDto> getInProgressEpisodes(UUID userId, String requestingUsername) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId));
+
+        // Authorization check: user can only view their own in-progress episodes
+        validateUserAccess(user.getUsername(), requestingUsername, "view your own in-progress episodes");
+
         List<EpisodeProgress> inProgress = episodeProgressRepository.findInProgressEpisodes(userId);
         return inProgress.stream()
                 .filter(ec -> !ec.isCompleted()) // Only truly in-progress episodes
@@ -112,9 +131,12 @@ public class EpisodeProgressServiceImpl implements EpisodeProgressService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserListeningStatsDto getUserListeningStats(UUID userId) {
+    public UserListeningStatsDto getUserListeningStats(UUID userId, String requestingUsername) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId));
+
+        // Authorization check: user can only view their own listening stats
+        validateUserAccess(user.getUsername(), requestingUsername, "view your own listening stats");
 
         // Get total listening time from User model (accurate tracking)
         long totalSeconds = user.getSecondsListened();
@@ -175,6 +197,38 @@ public class EpisodeProgressServiceImpl implements EpisodeProgressService {
             return String.format("%d:%02d:%02d", hours, minutes, secs);
         } else {
             return String.format("%d:%02d", minutes, secs);
+        }
+    }
+
+    /**
+     * Validates that the requesting user has permission to access the target user's data.
+     * Access is granted if:
+     * 1. The requesting user is the owner (targetUsername equals requestingUsername), OR
+     * 2. The requesting user has ROLE_ADMIN
+     *
+     * @param targetUsername The username of the user whose data is being accessed
+     * @param requestingUsername The username of the user making the request
+     * @param action Descriptive action string for error message (e.g., "view your own progress")
+     * @throws ResponseStatusException with HTTP 403 if access is denied
+     */
+    private void validateUserAccess(String targetUsername, String requestingUsername, String action) {
+        // Owner can always access their own data
+        if (targetUsername.equals(requestingUsername)) {
+            return;
+        }
+
+        // Check if requesting user has admin role
+        boolean isAdmin = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getAuthorities()
+                .stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!isAdmin) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You can only " + action
+            );
         }
     }
 }
