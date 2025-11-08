@@ -116,8 +116,8 @@ public class EpisodeProgressServiceImpl implements EpisodeProgressService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId));
 
-        long totalSeconds = episodeProgressRepository.getTotalListeningTimeByUser(userId) != null
-                ? episodeProgressRepository.getTotalListeningTimeByUser(userId) : 0L;
+        // Get total listening time from User model (accurate tracking)
+        long totalSeconds = user.getSecondsListened();
         long completedCount = episodeProgressRepository.countCompletedEpisodesByUser(userId);
         List<EpisodeProgress> inProgress = episodeProgressRepository.findInProgressEpisodes(userId);
         long inProgressCount = inProgress.stream().filter(ec -> !ec.isCompleted()).count();

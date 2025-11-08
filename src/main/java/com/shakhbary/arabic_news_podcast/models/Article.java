@@ -31,7 +31,7 @@ public class Article {
     @Column(name = "author", length = 150)
     private String author;
 
-    @Column(name = "publisher", nullable = false, length = 150)
+    @Column(name = "publisher", length = 150)
     private String publisher;
 
     @Column(name = "category", length = 100)
@@ -40,7 +40,7 @@ public class Article {
     @Column(name = "title", nullable = false, length = 150)
     private String title;
 
-    @Column(name = "published_at", nullable = false)
+    @Column(name = "published_at")
     private OffsetDateTime publishedAt;
 
     @Column(name = "content_raw_url", nullable = false)

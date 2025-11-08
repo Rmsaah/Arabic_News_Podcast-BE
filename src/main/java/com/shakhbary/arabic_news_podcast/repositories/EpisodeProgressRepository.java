@@ -34,7 +34,4 @@ public interface EpisodeProgressRepository extends JpaRepository<EpisodeProgress
 
     @Query("SELECT ep FROM EpisodeProgress ep WHERE ep.episode.id = :episodeId AND ep.isCompleted = false GROUP BY FLOOR(ep.lastPositionSeconds / 60) ORDER BY COUNT(*) DESC")
     List<EpisodeProgress> findCommonDropOffPoints(@Param("episodeId") UUID episodeId);
-
-    @Query("SELECT SUM(ep.lastPositionSeconds) FROM EpisodeProgress ep WHERE ep.user.id = :userId")
-    Long getTotalListeningTimeByUser(@Param("userId") UUID userId);
 }
