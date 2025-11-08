@@ -10,10 +10,12 @@ import com.shakhbary.arabic_news_podcast.services.UserProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+
 
 /**
  * REST controller for managing episode playback progress and listening statistics.
@@ -117,15 +119,17 @@ public class EpisodeProgressController {
      * @param episodeId Episode ID (for context/logging)
      * @param userId User ID
      * @param secondsListened Number of seconds listened in this session
+     * @param authentication Current authenticated user
      */
     @PostMapping("/episodes/{episodeId}/track-listening")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void trackListeningTime(
             @PathVariable UUID episodeId,
             @RequestParam UUID userId,
-            @RequestParam long secondsListened) {
+            @RequestParam long secondsListened,
+            Authentication authentication) {
 
-        userProfileService.trackListeningTime(userId, secondsListened);
+        userProfileService.trackListeningTime(userId, secondsListened, authentication.getName());
     }
 
     /**
@@ -135,15 +139,17 @@ public class EpisodeProgressController {
      * @param episodeId Episode ID
      * @param userId User ID
      * @param positionSeconds Current position in seconds
+     * @param authentication Current authenticated user
      */
     @PostMapping("/episodes/{episodeId}/position")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateEpisodePosition(
             @PathVariable UUID episodeId,
             @RequestParam UUID userId,
-            @RequestParam long positionSeconds) {
+            @RequestParam long positionSeconds,
+            Authentication authentication) {
 
-        userProfileService.updateEpisodeProgress(userId, episodeId, positionSeconds);
+        userProfileService.updateEpisodeProgress(userId, episodeId, positionSeconds, authentication.getName());
     }
 
     /**
@@ -153,14 +159,16 @@ public class EpisodeProgressController {
      * @param episodeId Episode ID
      * @param userId User ID
      * @param positionSeconds Final position in seconds (typically the episode duration)
+     * @param authentication Current authenticated user
      */
     @PostMapping("/episodes/{episodeId}/complete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void markEpisodeCompleted(
             @PathVariable UUID episodeId,
             @RequestParam UUID userId,
-            @RequestParam long positionSeconds) {
+            @RequestParam long positionSeconds,
+            Authentication authentication) {
 
-        userProfileService.markEpisodeCompleted(userId, episodeId, positionSeconds);
+        userProfileService.markEpisodeCompleted(userId, episodeId, positionSeconds, authentication.getName());
     }
 }

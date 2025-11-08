@@ -1,7 +1,7 @@
 package com.shakhbary.arabic_news_podcast.controllers;
 
+import com.shakhbary.arabic_news_podcast.dtos.UserDto;
 import com.shakhbary.arabic_news_podcast.dtos.UserRegistrationRequestDto;
-import com.shakhbary.arabic_news_podcast.models.User;
 import com.shakhbary.arabic_news_podcast.services.UserService;
 
 import jakarta.validation.Valid;
@@ -27,20 +27,11 @@ public class AuthController {
      * Assigns ROLE_USER by default.
      *
      * @param registrationRequest User registration data
-     * @return Success message with username
+     * @return UserDto with full user information (excluding password)
      */
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody @Valid UserRegistrationRequestDto registrationRequest) {
-        try {
-            User newUser = userService.registerNewUser(registrationRequest);
-            // In a real app, you wouldn't return the entire user object, especially the password,
-            // but for a successful test, it's sufficient.
-            return new ResponseEntity<>(
-                    "User registered successfully: " + newUser.getUsername(),
-                    HttpStatus.CREATED
-            );
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<UserDto> registerUser(@RequestBody @Valid UserRegistrationRequestDto registrationRequest) {
+        UserDto newUser = userService.registerNewUser(registrationRequest);
+        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 }

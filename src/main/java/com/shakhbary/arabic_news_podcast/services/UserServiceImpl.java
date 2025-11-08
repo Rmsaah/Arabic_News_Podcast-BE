@@ -9,9 +9,12 @@ import com.shakhbary.arabic_news_podcast.repositories.RoleRepository;
 import com.shakhbary.arabic_news_podcast.repositories.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.OffsetDateTime;
 import java.util.HashSet;
@@ -28,7 +31,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User registerNewUser(UserRegistrationRequestDto registrationRequest) {
+    public UserDto registerNewUser(UserRegistrationRequestDto registrationRequest) {
         // Check if username already exists
         if (userRepository.existsByUsername(registrationRequest.getUsername())) {
             throw new RuntimeException("Username is already taken");
@@ -58,15 +61,30 @@ public class UserServiceImpl implements UserService {
         roles.add(userRole);
         user.setRoles(roles);
 
-        // Save and return user
-        return userRepository.save(user);
+        // Save user
+        user = userRepository.save(user);
+
+        // Return as DTO (no password exposed)
+        return new UserDto(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getCreationDate(),
+                user.getLastLoginDate()
+        );
     }
 
     @Override
     @Transactional(readOnly = true)
-    public UserDto getUser(UUID userId) {
+    public UserDto getUser(UUID userId, String requestingUsername) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId));
+
+        // Authorization check: user can only view their own profile unless they're an admin
+        validateUserAccess(user.getUsername(), requestingUsername, "view this profile");
+
         return new UserDto(
                 user.getId(),
                 user.getUsername(),
@@ -80,12 +98,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto updateUserName(UUID userId, String firstName, String lastName) {
+    public UserDto updateUserName(UUID userId, String firstName, String lastName, String requestingUsername) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId));
+
+        // Authorization check: user can only update their own profile unless they're an admin
+        validateUserAccess(user.getUsername(), requestingUsername, "update this profile");
+
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user = userRepository.save(user);
+
         return new UserDto(
                 user.getId(),
                 user.getUsername(),
@@ -95,5 +118,35 @@ public class UserServiceImpl implements UserService {
                 user.getCreationDate(),
                 user.getLastLoginDate()
         );
+    }
+
+    /**
+     * Validates that the requesting user has permission to access the target user's data.
+     * Allows access if: requesting user is the target user OR requesting user has ADMIN role.
+     *
+     * @param targetUsername Username of the user being accessed
+     * @param requestingUsername Username of the user making the request
+     * @param action Description of the action being attempted (for error message)
+     * @throws ResponseStatusException if access is denied
+     */
+    private void validateUserAccess(String targetUsername, String requestingUsername, String action) {
+        // Check if requesting user is trying to access their own data
+        if (targetUsername.equals(requestingUsername)) {
+            return; // Access granted
+        }
+
+        // Check if requesting user has ADMIN role
+        boolean isAdmin = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getAuthorities()
+                .stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!isAdmin) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You can only " + action
+            );
+        }
     }
 }
