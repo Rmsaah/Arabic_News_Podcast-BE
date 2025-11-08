@@ -3,10 +3,13 @@ package com.shakhbary.arabic_news_podcast.services;
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeDto;
 import java.util.List;
 
-
 /**
  * Service for automating the complete podcast episode creation workflow
- * from JSON data to playable episodes
+ * from JSON data to playable episodes.
+ *
+ * This service follows a clean architecture approach where all files
+ * (audio, transcripts, images) must be uploaded to cloud storage externally
+ * by admins, and only the resulting URLs are provided to this service.
  */
 public interface EpisodeAutomationService {
 
@@ -23,28 +26,4 @@ public interface EpisodeAutomationService {
      * @return Created episode
      */
     EpisodeDto processEpisodeFromJson(String episodeJson);
-
-    /**
-     * Upload files to cloud storage and make them publicly accessible
-     * @param localFilePath Path to local file
-     * @param fileName Desired filename in cloud storage
-     * @return Public URL of uploaded file
-     */
-    String uploadToCloudStorage(String localFilePath, String fileName);
-
-    /**
-     * Process transcript text and generate public URL
-     * @param transcriptContent Text content
-     * @param episodeId Episode identifier for filename
-     * @return Public URL to transcript
-     */
-    String processTranscript(String transcriptContent, String episodeId);
-
-    /**
-     * Process audio file and generate public URL
-     * @param audioFilePath Path to audio file
-     * @param episodeId Episode identifier for filename
-     * @return Public URL to audio file
-     */
-    String processAudioFile(String audioFilePath, String episodeId);
 }

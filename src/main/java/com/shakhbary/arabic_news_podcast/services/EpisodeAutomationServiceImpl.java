@@ -11,7 +11,6 @@ import com.shakhbary.arabic_news_podcast.repositories.ArticleRepository;
 import com.shakhbary.arabic_news_podcast.repositories.AudioRepository;
 import com.shakhbary.arabic_news_podcast.repositories.EpisodeRepository;
 import com.shakhbary.arabic_news_podcast.services.EpisodeAutomationService;
-import com.shakhbary.arabic_news_podcast.services.CloudStorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,11 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +29,6 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
     private final EpisodeRepository episodeRepository;
     private final ArticleRepository articleRepository;
     private final AudioRepository audioRepository;
-    private final CloudStorageService cloudStorageService;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -77,15 +72,12 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
         validateJsonDto(jsonDto);
 
         try {
-            // Generate unique ID for file naming if needed
-            String uniqueId = UUID.randomUUID().toString();
-
             // 1. Process Article entity
             Article article = processArticleEntity(jsonDto.getArticle());
             log.info("✅ Article created with ID: {}", article.getId());
 
             // 2. Process Audio entity
-            Audio audio = processAudioEntity(jsonDto.getAudio(), article, uniqueId);
+            Audio audio = processAudioEntity(jsonDto.getAudio(), article);
             log.info("✅ Audio created with ID: {}", audio.getId());
 
             // 3. Process Episode entity
@@ -124,8 +116,8 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
 
         // Validate Audio fields
         EpisodeJsonDto.AudioData audio = jsonDto.getAudio();
-        if (audio.getUrlPath() == null && audio.getAudioFilePath() == null) {
-            throw new IllegalArgumentException("Either audio urlPath or audioFilePath is required");
+        if (audio.getUrlPath() == null || audio.getUrlPath().isBlank()) {
+            throw new IllegalArgumentException("Audio urlPath is required");
         }
 
         // Validate Episode fields
@@ -173,7 +165,7 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
     /**
      * Process and create Audio entity from JSON data
      */
-    private Audio processAudioEntity(EpisodeJsonDto.AudioData audioData, Article article, String uniqueId) {
+    private Audio processAudioEntity(EpisodeJsonDto.AudioData audioData, Article article) {
         try {
             Audio audio = new Audio();
 
@@ -184,15 +176,10 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
             audio.setDuration(audioData.getDuration() != null ? audioData.getDuration() : 0L);
             audio.setFormat(audioData.getFormat());
 
-            // Handle URL path - use provided or upload file
+            // Require URL path (must be provided as cloud storage URL)
             String urlPath = audioData.getUrlPath();
             if (urlPath == null || urlPath.isBlank()) {
-                // If no URL provided but we have a file path, upload it
-                if (audioData.getAudioFilePath() != null && !audioData.getAudioFilePath().isBlank()) {
-                    urlPath = processAudioFile(audioData.getAudioFilePath(), uniqueId);
-                } else {
-                    throw new IllegalArgumentException("Audio must have either urlPath or audioFilePath");
-                }
+                throw new IllegalArgumentException("Audio urlPath is required");
             }
             audio.setUrlPath(urlPath);
 
@@ -241,53 +228,6 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
         }
     }
 
-    @Override
-    public String processTranscript(String transcriptContent, String episodeId) {
-        try {
-            // Create temporary file for transcript
-            String fileName = String.format("transcripts/%s-transcript.txt", episodeId);
-            String tempFilePath = createTempFile(transcriptContent, "transcript", ".txt");
-
-            // Upload to cloud storage
-            String publicUrl = cloudStorageService.uploadFile(tempFilePath, fileName, "text/plain");
-
-            // Cleanup temp file
-            Files.deleteIfExists(Paths.get(tempFilePath));
-
-            log.info("Uploaded transcript for episode {}: {}", episodeId, publicUrl);
-            return publicUrl;
-
-        } catch (Exception e) {
-            log.error("Failed to process transcript for episode: {}", episodeId, e);
-            throw new RuntimeException("Failed to process transcript", e);
-        }
-    }
-
-    @Override
-    public String processAudioFile(String audioFilePath, String episodeId) {
-        try {
-            // Determine file extension
-            String extension = audioFilePath.substring(audioFilePath.lastIndexOf('.'));
-            String fileName = String.format("audio/%s-audio%s", episodeId, extension);
-
-            // Upload to cloud storage
-            String mimeType = getMimeType(extension);
-            String publicUrl = cloudStorageService.uploadFile(audioFilePath, fileName, mimeType);
-
-            log.info("Uploaded audio for episode {}: {}", episodeId, publicUrl);
-            return publicUrl;
-
-        } catch (Exception e) {
-            log.error("Failed to process audio file for episode: {}", episodeId, e);
-            throw new RuntimeException("Failed to process audio file", e);
-        }
-    }
-
-    @Override
-    public String uploadToCloudStorage(String localFilePath, String fileName) {
-        return cloudStorageService.uploadFile(localFilePath, fileName, "application/octet-stream");
-    }
-
     /**
      * Convert Episode entity to DTO for API response
      */
@@ -306,28 +246,5 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
                 episode.getArticle() != null ? episode.getArticle().getTitle() : null,
                 episode.getImageUrl()
         );
-    }
-
-    /**
-     * Create temporary file for upload operations
-     */
-    private String createTempFile(String content, String prefix, String suffix) throws IOException {
-        File tempFile = File.createTempFile(prefix, suffix);
-        Files.write(tempFile.toPath(), content.getBytes());
-        return tempFile.getAbsolutePath();
-    }
-
-    /**
-     * Determine MIME type from file extension
-     */
-    private String getMimeType(String extension) {
-        return switch (extension.toLowerCase()) {
-            case ".mp3" -> "audio/mpeg";
-            case ".wav" -> "audio/wav";
-            case ".ogg" -> "audio/ogg";
-            case ".m4a" -> "audio/mp4";
-            case ".flac" -> "audio/flac";
-            default -> "audio/mpeg";
-        };
     }
 }

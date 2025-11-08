@@ -51,8 +51,7 @@ public class EpisodeJsonDto {
     public static class AudioData {
         private Long duration;                // Duration in seconds
         private String format;                // e.g., "mp3", "wav", "m4a"
-        private String urlPath;               // URL to audio file (optional, will be generated if audioFilePath provided)
-        private String audioFilePath;         // Local file path for upload (if urlPath not provided)
+        private String urlPath;               // URL to audio file in cloud storage (required)
     }
 
     /**
