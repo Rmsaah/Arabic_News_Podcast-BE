@@ -14,6 +14,15 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Custom UserDetailsService implementation for Spring Security.
+ * Loads user information from the database for authentication.
+ *
+ * Features:
+ * - Loads user by username from database
+ * - Maps user roles to Spring Security authorities
+ * - Supports account enabled/disabled status
+ */
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
@@ -25,6 +34,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
+        // Convert user roles to Spring Security authorities
         Set<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toSet());
@@ -32,8 +42,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),
-                user.isEnabled(),
-                true, true, true,
+                user.isEnabled(),      // Account enabled
+                true,                  // Account not expired
+                true,                  // Credentials not expired
+                true,                  // Account not locked
                 authorities
         );
     }

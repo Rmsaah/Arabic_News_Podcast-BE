@@ -74,15 +74,15 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
         try {
             // 1. Process Article entity
             Article article = processArticleEntity(jsonDto.getArticle());
-            log.info("✅ Article created with ID: {}", article.getId());
+            log.info("Article created with ID: {}", article.getId());
 
             // 2. Process Audio entity
             Audio audio = processAudioEntity(jsonDto.getAudio(), article);
-            log.info("✅ Audio created with ID: {}", audio.getId());
+            log.info("Audio created with ID: {}", audio.getId());
 
             // 3. Process Episode entity
             Episode episode = processEpisodeEntity(jsonDto.getEpisode(), article, audio);
-            log.info("✅ Episode created with ID: {}", episode.getId());
+            log.info("Episode created with ID: {}", episode.getId());
 
             log.info("Successfully created complete episode: {}", episode.getTitle());
 
