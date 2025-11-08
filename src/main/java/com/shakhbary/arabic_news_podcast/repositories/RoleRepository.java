@@ -7,7 +7,17 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Repository for Role entity.
+ * Provides database access for user roles.
+ */
 @Repository
 public interface RoleRepository extends JpaRepository<Role, UUID> {
+
+    /**
+     * Find a role by its name (e.g., "ROLE_USER", "ROLE_ADMIN")
+     * @param name The role name
+     * @return Optional containing the role if found
+     */
     Optional<Role> findByName(String name);
 }
