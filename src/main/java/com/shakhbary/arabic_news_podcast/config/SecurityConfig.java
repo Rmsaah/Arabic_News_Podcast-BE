@@ -50,6 +50,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints - no authentication required
                         .requestMatchers("/api/auth/register").permitAll()       // User registration
+                        .requestMatchers("/api/auth/login").permitAll()          // User login
                         .requestMatchers("/api/episodes/**").permitAll()         // Browse episodes
                         .requestMatchers("/api/audio/**").permitAll()            // Stream audio
                         .requestMatchers("/api/home/**").permitAll()             // Homepage content
