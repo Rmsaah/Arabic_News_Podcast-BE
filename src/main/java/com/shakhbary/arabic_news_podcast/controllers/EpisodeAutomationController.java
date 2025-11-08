@@ -23,7 +23,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 /**
- * REST controller for automating podcast episode creation.
+ * REST controller for automating podcast episode creation. (Creates all 3 objects (Article + Audio + Episode) at once)
  * Handles bulk episode creation from JSON files and single episode processing.
  * <p>
  * Security: Admin-only endpoints under /api/admin/* should be protected by authentication.

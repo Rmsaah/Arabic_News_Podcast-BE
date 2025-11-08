@@ -15,10 +15,14 @@ import java.util.UUID;
 
 /**
  * REST controller for managing podcast episodes.
- * Provides endpoints for listing, searching, retrieving, and creating episodes.
+ * <p>
+ * Public endpoints: Listing and retrieving episodes (GET operations)
+ * Admin endpoints: Creating episodes (POST operations) - should be under /api/admin/episodes
+ * <p>
+ * Note: Episode creation via POST /api/admin/episodes should be protected by authentication.
+ * For bulk episode creation with automatic Article/Audio creation, use EpisodeAutomationController.
  */
 @RestController
-@RequestMapping("/api/episodes")
 @RequiredArgsConstructor
 public class EpisodeController {
 
@@ -26,12 +30,13 @@ public class EpisodeController {
 
     /**
      * Get a paginated list of all episodes.
+     * Public endpoint - no authentication required.
      *
      * @param page Page number (0-based), default 0
      * @param size Page size (max 100), default 20
      * @return Paginated list of episodes
      */
-    @GetMapping
+    @GetMapping("/api/episodes")
     public Page<EpisodeDto> listEpisodes(@RequestParam(defaultValue = "0") int page,
                                          @RequestParam(defaultValue = "20") int size) {
         Pageable pageable = PageRequest.of(page, Math.min(size, 100));
@@ -40,22 +45,24 @@ public class EpisodeController {
 
     /**
      * Get a specific episode by ID.
+     * Public endpoint - no authentication required.
      *
      * @param id Episode ID
      * @return Episode details
      */
-    @GetMapping("/{id}")
+    @GetMapping("/api/episodes/{id}")
     public EpisodeDto getEpisode(@PathVariable("id") UUID id) {
         return episodeService.getEpisode(id);
     }
 
     /**
      * Create a new episode.
+     * Admin endpoint - should be protected by authentication.
      *
      * @param request Episode creation request with all required fields
      * @return Created episode with generated ID
      */
-    @PostMapping
+    @PostMapping("/api/admin/episodes")
     @ResponseStatus(HttpStatus.CREATED)
     public EpisodeDto createEpisode(@RequestBody @jakarta.validation.Valid EpisodeCreateRequestDto request) {
         return episodeService.createEpisode(request);
@@ -63,6 +70,7 @@ public class EpisodeController {
 
     /**
      * Search for episodes by title and/or category.
+     * Public endpoint - no authentication required.
      *
      * @param title Optional title search term (partial match)
      * @param category Optional category filter (exact match)
@@ -70,7 +78,7 @@ public class EpisodeController {
      * @param size Page size (max 100), default 20
      * @return Paginated search results
      */
-    @GetMapping("/search")
+    @GetMapping("/api/episodes/search")
     public Page<EpisodeDto> search(@RequestParam(required = false) String title,
                                    @RequestParam(required = false) String category,
                                    @RequestParam(defaultValue = "0") int page,
