@@ -18,7 +18,7 @@ public interface RatingRepository extends JpaRepository<Rating, UUID> {
     @Query("SELECT COUNT(r) FROM Rating r WHERE r.episode.id = :episodeId")
     long countRatingsForEpisode(@Param("episodeId") UUID episodeId);
 
-    @Query("SELECT r FROM Rating r WHERE r.user.id = :userId ORDER BY r.ratedAt DESC")
+    @Query("SELECT r FROM Rating r WHERE r.user.id = :userId ORDER BY r.ratingDate DESC")
     List<Rating> findAllByUserOrdered(@Param("userId") UUID userId);
 
     @Query("SELECT r FROM Rating r WHERE r.user.id = :userId AND r.episode.id = :episodeId")
