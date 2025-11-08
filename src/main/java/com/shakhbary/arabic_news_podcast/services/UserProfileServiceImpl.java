@@ -52,7 +52,7 @@ public class UserProfileServiceImpl implements UserProfileService {
                         r.getEpisode().getId(),
                         r.getEpisode().getTitle(),
                         r.getRating(),
-                        r.getRatedAt()
+                        r.getRatingDate()
                 )).toList();
 
         // Build episode history: ALL episodes with progress (completed or in-progress)
@@ -76,11 +76,11 @@ public class UserProfileServiceImpl implements UserProfileService {
                     // Determine rating status string
                     String ratingStatus;
                     Integer ratingValue = null;
-                    OffsetDateTime ratedAt = null;
+                    OffsetDateTime ratingDate = null;
 
                     if (rating != null) {
                         ratingValue = rating.getRating();
-                        ratedAt = rating.getRatedAt();
+                        ratingDate = rating.getRatingDate();
                         ratingStatus = ratingValue == 1 ? "1 star" : ratingValue + " stars";
                     } else {
                         ratingStatus = "Not Rated";
@@ -94,10 +94,10 @@ public class UserProfileServiceImpl implements UserProfileService {
                             progress.calculateCompletionPercentage(),
                             progress.isCompleted(),
                             progress.getPlayCount(),
-                            progress.getLastPlayedAt(),
+                            progress.getLastPlayedDate(),
                             ratingStatus,
                             ratingValue,
-                            ratedAt
+                            ratingDate
                     );
                 }).toList();
 
@@ -107,7 +107,7 @@ public class UserProfileServiceImpl implements UserProfileService {
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
-                user.getCreatedAt(),
+                user.getCreationDate(),
                 (int) completedEpisodes,
                 totalSeconds,
                 recentRatings,

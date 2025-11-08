@@ -141,8 +141,8 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
             article.setPublisher(articleData.getPublisher());
 
             // Parse published date if provided
-            if (articleData.getPublishedAt() != null && !articleData.getPublishedAt().isBlank()) {
-                article.setPublishedAt(OffsetDateTime.parse(articleData.getPublishedAt()));
+            if (articleData.getPublicationDate() != null && !articleData.getPublicationDate().isBlank()) {
+                article.setPublicationDate(OffsetDateTime.parse(articleData.getPublicationDate()));
             }
 
             // Set content URLs (must be provided as cloud storage URLs)
@@ -152,7 +152,7 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
                     : articleData.getContentRawUrl());
 
             // Set fetch timestamp
-            article.setFetchedAt(OffsetDateTime.now());
+            article.setFetchDate(OffsetDateTime.now());
 
             return articleRepository.save(article);
 
@@ -184,7 +184,7 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
             audio.setUrlPath(urlPath);
 
             // Set creation timestamp
-            audio.setCreatedAt(OffsetDateTime.now());
+            audio.setCreationDate(OffsetDateTime.now());
 
             return audioRepository.save(audio);
 
@@ -218,7 +218,7 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
             episode.setScriptUrlPath(scriptUrl);
 
             // Set creation timestamp
-            episode.setCreatedAt(OffsetDateTime.now());
+            episode.setCreationDate(OffsetDateTime.now());
 
             return episodeRepository.save(episode);
 
@@ -241,7 +241,7 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
                 episode.getAudio() != null ? episode.getAudio().getDuration() : 0L,
                 0.0, // No ratings yet
                 0,   // No ratings yet
-                episode.getCreatedAt(),
+                episode.getCreationDate(),
                 episode.getArticle() != null ? episode.getArticle().getId() : null,
                 episode.getArticle() != null ? episode.getArticle().getTitle() : null,
                 episode.getImageUrl()

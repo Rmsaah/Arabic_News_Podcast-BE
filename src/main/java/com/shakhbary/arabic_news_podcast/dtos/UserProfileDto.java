@@ -16,7 +16,7 @@ public class UserProfileDto {
     private String email;
     private String firstName;
     private String lastName;
-    private OffsetDateTime createdAt;
+    private OffsetDateTime creationDate;
 
     // Stats
     private int totalEpisodesCompleted;
@@ -25,7 +25,7 @@ public class UserProfileDto {
     // Recent ratings (simplified)
     private List<UserRatingDto> recentRatings;
 
-    // Episode history (completed episodes with optional ratings)
+    // Episode history (all episodes with progress - completed or in-progress)
     private List<EpisodeHistoryDto> episodeHistory;
 
     /**
@@ -39,6 +39,6 @@ public class UserProfileDto {
         private UUID episodeId;
         private String episodeTitle;
         private int rating;
-        private OffsetDateTime ratedAt;
+        private OffsetDateTime ratingDate;
     }
 }

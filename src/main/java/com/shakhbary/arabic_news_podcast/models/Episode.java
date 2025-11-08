@@ -18,7 +18,7 @@ import java.util.UUID;
         indexes = {
                 @Index(name = "idx_episode_article_id", columnList = "article_id"),
                 @Index(name = "idx_episode_audio_id", columnList = "audio_id"),
-                @Index(name = "idx_episode_created_at", columnList = "created_at")
+                @Index(name = "idx_episode_creation_date", columnList = "creation_date")
         })
 public class Episode {
 
@@ -29,7 +29,7 @@ public class Episode {
     /* FOREIGN KEYS */
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "article_id", referencedColumnName = "id", nullable = false, unique = true)
+    @JoinColumn(name = "article_id", referencedColumnName = "id", nullable = false)
     private Article article;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -38,10 +38,10 @@ public class Episode {
 
     /* DATA */
 
-    @Column(name = "title", nullable = false, length = 150)
+    @Column(name = "title", nullable = false, length = 250)
     private String title;
 
-    @Column(name = "description", length = 500)
+    @Column(name = "description", length = 1000)
     private String description;
 
     @Column(name = "script_url_path", nullable = false)
@@ -51,8 +51,8 @@ public class Episode {
     private String imageUrl;
 
     @CreatedDate // Tells Spring to auto-populate this on creation
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private OffsetDateTime createdAt;
+    @Column(name = "creation_date", nullable = false, updatable = false)
+    private OffsetDateTime creationDate;
 
     /* RELATIONAL MAPPINGS */
 

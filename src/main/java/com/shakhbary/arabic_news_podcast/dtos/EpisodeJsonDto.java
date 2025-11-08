@@ -37,7 +37,7 @@ public class EpisodeJsonDto {
         private String category;
         private String author;
         private String publisher;
-        private String publishedAt;           // ISO date string
+        private String publicationDate;       // ISO date string
         private String contentRawUrl;         // URL to raw text content in cloud storage
         private String scriptUrl;             // URL to processed/cleaned script in cloud storage
     }

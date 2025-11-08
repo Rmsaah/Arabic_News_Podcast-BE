@@ -18,7 +18,7 @@ import java.util.UUID;
         indexes = {
                 @Index(name = "idx_article_category", columnList = "category"),
                 @Index(name = "idx_article_author", columnList = "author"),
-                @Index(name = "idx_article_fetched_at", columnList = "fetched_at")
+                @Index(name = "idx_article_fetch_date", columnList = "fetch_date")
         })
 public class Article {
 
@@ -40,8 +40,8 @@ public class Article {
     @Column(name = "title", nullable = false, length = 150)
     private String title;
 
-    @Column(name = "published_at")
-    private OffsetDateTime publishedAt;
+    @Column(name = "publication_date")
+    private OffsetDateTime publicationDate;
 
     @Column(name = "content_raw_url", nullable = false)
     private String contentRawUrl;
@@ -50,8 +50,8 @@ public class Article {
     private String scriptUrl;
 
     @CreatedDate
-    @Column(name = "fetched_at", nullable = false, updatable = false)
-    private OffsetDateTime fetchedAt;
+    @Column(name = "fetch_date", nullable = false, updatable = false)
+    private OffsetDateTime fetchDate;
 
     /* RELATIONAL MAPPINGS */
 

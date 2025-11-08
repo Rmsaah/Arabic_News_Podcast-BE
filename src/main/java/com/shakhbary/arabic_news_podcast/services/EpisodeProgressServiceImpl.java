@@ -155,7 +155,7 @@ public class EpisodeProgressServiceImpl implements EpisodeProgressService {
                 completionPercentage,  // Calculated, not stored
                 completion.isCompleted(),
                 completion.getPlayCount(),
-                completion.getLastPlayedAt()
+                completion.getLastPlayedDate()
         );
 
         // Set calculated fields

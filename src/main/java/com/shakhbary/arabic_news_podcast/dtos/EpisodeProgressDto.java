@@ -16,7 +16,7 @@ public class EpisodeProgressDto {
     private double completionPercentage;     // Calculated: position/duration (NOT stored)
     private boolean isCompleted;             // Analytics: did user finish?
     private int playCount;                   // Analytics: how many times played
-    private OffsetDateTime lastPlayedAt;     // When last updated/played
+    private OffsetDateTime lastPlayedDate;   // When last updated/played
     private long remainingSeconds;           // Calculated: time left
     private String formattedPosition;        // Formatted: "12:45" or "1:23:45"
     private String formattedRemaining;       // Formatted: "7:15 remaining"
@@ -24,7 +24,7 @@ public class EpisodeProgressDto {
     // Constructor for API responses with calculated fields
     public EpisodeProgressDto(UUID id, UUID episodeId, String episodeTitle,
                               long lastPositionSeconds, double completionPercentage,
-                              boolean isCompleted, int playCount, OffsetDateTime lastPlayedAt) {
+                              boolean isCompleted, int playCount, OffsetDateTime lastPlayedDate) {
         this.id = id;
         this.episodeId = episodeId;
         this.episodeTitle = episodeTitle;
@@ -32,6 +32,6 @@ public class EpisodeProgressDto {
         this.completionPercentage = completionPercentage;
         this.isCompleted = isCompleted;
         this.playCount = playCount;
-        this.lastPlayedAt = lastPlayedAt;
+        this.lastPlayedDate = lastPlayedDate;
     }
 }

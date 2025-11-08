@@ -26,7 +26,7 @@ public class Audio {
 
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "article_id", referencedColumnName = "id", nullable = false, unique = true)
+    @JoinColumn(name = "article_id", referencedColumnName = "id", nullable = false)
     private Article article;
 
     /* DATA */
@@ -41,8 +41,8 @@ public class Audio {
     private String urlPath;
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private OffsetDateTime createdAt;
+    @Column(name = "creation_date", nullable = false, updatable = false)
+    private OffsetDateTime creationDate;
 
     /* RELATIONAL MAPPINGS */
 

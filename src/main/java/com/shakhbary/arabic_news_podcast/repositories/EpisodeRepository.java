@@ -18,7 +18,7 @@ public interface EpisodeRepository extends JpaRepository<Episode,UUID> {
     * after: used for the 'CreatedAtAfter' filter
     * pageable: the input object that dictates which page number and how many items per page we want (e.g., page 2, 10 items)
      */
-    Page<Episode> findByCreatedAtAfterOrderByCreatedAtDesc(OffsetDateTime after, Pageable pageable);
+    Page<Episode> findByCreationDateAfterOrderByCreationDateDesc(OffsetDateTime after, Pageable pageable);
 
     /*
     * description: Advanced search for episodes by title and/or category with pagination.

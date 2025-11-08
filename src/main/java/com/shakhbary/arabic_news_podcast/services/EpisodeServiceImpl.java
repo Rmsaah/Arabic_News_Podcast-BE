@@ -45,7 +45,7 @@ public class EpisodeServiceImpl implements EpisodeService {
                             (int) count,
                             e.getImageUrl(),
                             truncate(e.getDescription(), 180),
-                            e.getCreatedAt()
+                            e.getCreationDate()
                     );
                 });
     }
@@ -67,7 +67,7 @@ public class EpisodeServiceImpl implements EpisodeService {
                 e.getAudio() != null ? e.getAudio().getDuration() : 0L,
                 avg != null ? avg : 0.0,
                 (int) count,
-                e.getCreatedAt(),
+                e.getCreationDate(),
                 e.getArticle() != null ? e.getArticle().getId() : null,
                 e.getArticle() != null ? e.getArticle().getTitle() : null,
                 e.getImageUrl()
@@ -90,7 +90,7 @@ public class EpisodeServiceImpl implements EpisodeService {
             audio.setDuration(request.getDurationSeconds() != null ? request.getDurationSeconds() : 0L);
             audio.setFormat(request.getAudioFormat());
             audio.setUrlPath(request.getAudioUrlPath());
-            audio.setCreatedAt(OffsetDateTime.now());
+            audio.setCreationDate(OffsetDateTime.now());
             audio = audioRepository.save(audio);
         }
 
@@ -101,11 +101,11 @@ public class EpisodeServiceImpl implements EpisodeService {
         episode.setDescription(request.getDescription());
         episode.setScriptUrlPath(request.getScriptUrlPath());
         episode.setImageUrl(request.getImageUrl());
-        episode.setCreatedAt(OffsetDateTime.now());
+        episode.setCreationDate(OffsetDateTime.now());
 
         episode = episodeRepository.save(episode);
 
-        return new EpisodeDto(episode.getId(), episode.getCreatedAt());
+        return new EpisodeDto(episode.getId(), episode.getCreationDate());
     }
 
     @Override
@@ -113,7 +113,7 @@ public class EpisodeServiceImpl implements EpisodeService {
     public java.util.List<EpisodeDto> listDailyEpisodes(int limit) {
         java.time.OffsetDateTime now = java.time.OffsetDateTime.now();
         java.time.OffsetDateTime startOfDay = now.toLocalDate().atStartOfDay().atOffset(now.getOffset());
-        Page<Episode> page = episodeRepository.findByCreatedAtAfterOrderByCreatedAtDesc(startOfDay, PageRequest.of(0, limit));
+        Page<Episode> page = episodeRepository.findByCreationDateAfterOrderByCreationDateDesc(startOfDay, PageRequest.of(0, limit));
         return page.stream().map(e -> {
             Double avg = ratingRepository.findAverageRatingForEpisode(e.getId());
             long count = ratingRepository.countRatingsForEpisode(e.getId());
@@ -125,7 +125,7 @@ public class EpisodeServiceImpl implements EpisodeService {
                     (int) count,
                     e.getImageUrl(),
                     truncate(e.getDescription(), 180),
-                    e.getCreatedAt()
+                    e.getCreationDate()
             );
         }).toList();
     }
@@ -148,7 +148,7 @@ public class EpisodeServiceImpl implements EpisodeService {
                     (int) count,
                     e.getImageUrl(),
                     truncate(e.getDescription(), 180),
-                    e.getCreatedAt()
+                    e.getCreationDate()
             );
         });
     }

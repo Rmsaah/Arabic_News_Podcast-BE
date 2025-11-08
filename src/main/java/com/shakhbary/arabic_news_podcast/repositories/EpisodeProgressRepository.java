@@ -16,7 +16,7 @@ public interface EpisodeProgressRepository extends JpaRepository<EpisodeProgress
     @Query("SELECT COUNT(ep) FROM EpisodeProgress ep WHERE ep.user.id = :userId AND ep.isCompleted = true")
     long countCompletedEpisodesByUser(@Param("userId") UUID userId);
 
-    @Query("SELECT ep FROM EpisodeProgress ep WHERE ep.user.id = :userId ORDER BY ep.lastPlayedAt DESC")
+    @Query("SELECT ep FROM EpisodeProgress ep WHERE ep.user.id = :userId ORDER BY ep.lastPlayedDate DESC")
     List<EpisodeProgress> findAllByUserOrdered(@Param("userId") UUID userId);
 
     @Query("SELECT ep FROM EpisodeProgress ep WHERE ep.user.id = :userId AND ep.episode.id = :episodeId")
@@ -25,7 +25,7 @@ public interface EpisodeProgressRepository extends JpaRepository<EpisodeProgress
     boolean existsByUserIdAndEpisodeId(UUID userId, UUID episodeId);
 
     // New queries for position-based tracking
-    @Query("SELECT ep FROM EpisodeProgress ep WHERE ep.user.id = :userId AND ep.lastPositionSeconds > 0 AND ep.isCompleted = false ORDER BY ep.lastPlayedAt DESC")
+    @Query("SELECT ep FROM EpisodeProgress ep WHERE ep.user.id = :userId AND ep.lastPositionSeconds > 0 AND ep.isCompleted = false ORDER BY ep.lastPlayedDate DESC")
     List<EpisodeProgress> findInProgressEpisodes(@Param("userId") UUID userId);
 
     // Calculate average completion percentage: (lastPositionSeconds / episode.audio.duration)

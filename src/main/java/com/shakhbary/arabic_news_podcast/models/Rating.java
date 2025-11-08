@@ -28,12 +28,12 @@ public class Rating {
 
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY) //fetch = FetchType.LAZY is recommended for performance; the related entity (e.g., Article) is only loaded from the database when you explicitly call a getter for it.
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, unique = true)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY) //fetch = FetchType.LAZY is recommended for performance; the related entity (e.g., Article) is only loaded from the database when you explicitly call a getter for it.
-    @JoinColumn(name = "episode_id", referencedColumnName = "id", nullable = false, unique = true)
+    @JoinColumn(name = "episode_id", referencedColumnName = "id", nullable = false)
     private Episode episode;
 
     /* DATA */
@@ -42,7 +42,7 @@ public class Rating {
     private int rating; // from 1 to 5
 
     @CreatedDate
-    @Column(name = "rated_at", nullable = false)
-    private OffsetDateTime ratedAt;
+    @Column(name = "rating_date", nullable = false)
+    private OffsetDateTime ratingDate;
 
 }

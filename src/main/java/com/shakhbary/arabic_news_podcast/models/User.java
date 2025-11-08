@@ -25,27 +25,27 @@ public class User {
     @Column(name = "username", nullable = false, unique = true, length = 50)
     private String username;
 
-    @Column(name = "email", nullable = false, length = 100)
+    @Column(name = "email", nullable = false, unique = true, length = 120)
     private String email;
 
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "first_name", nullable = false, length = 30)
+    @Column(name = "first_name", length = 80)
     private String firstName;
 
-    @Column(name = "last_name", length = 30)
+    @Column(name = "last_name", length = 80)
     private String lastName;
 
     @Column(name = "seconds_listened", nullable = false)
     private long secondsListened = 0L;
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private OffsetDateTime createdAt;
+    @Column(name = "creation_date", nullable = false, updatable = false)
+    private OffsetDateTime creationDate;
 
-    @Column(name = "last_login_at")
-    private OffsetDateTime lastLoginAt;
+    @Column(name = "last_login_date")
+    private OffsetDateTime lastLoginDate;
 
     /* RELATIONAL MAPPINGS */
 

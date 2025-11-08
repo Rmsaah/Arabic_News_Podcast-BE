@@ -17,14 +17,14 @@ public class EpisodeDto {
     private long durationSeconds;
     private double averageRating;
     private int ratingCount;
-    private OffsetDateTime createdAt;
+    private OffsetDateTime creationDate;
     private UUID articleId;
     private String articleTitle;
     private String imageUrl;
 
     // Constructor for list view (without transcript)
     public EpisodeDto(UUID id, String title, long durationSeconds, double averageRating,
-                      int ratingCount, String imageUrl, String description, OffsetDateTime createdAt) {
+                      int ratingCount, String imageUrl, String description, OffsetDateTime creationDate) {
         this.id = id;
         this.title = title;
         this.durationSeconds = durationSeconds;
@@ -32,12 +32,12 @@ public class EpisodeDto {
         this.ratingCount = ratingCount;
         this.imageUrl = imageUrl;
         this.description = description;
-        this.createdAt = createdAt;
+        this.creationDate = creationDate;
     }
 
     // Constructor for creation response
-    public EpisodeDto(UUID id, OffsetDateTime createdAt) {
+    public EpisodeDto(UUID id, OffsetDateTime creationDate) {
         this.id = id;
-        this.createdAt = createdAt;
+        this.creationDate = creationDate;
     }
 }

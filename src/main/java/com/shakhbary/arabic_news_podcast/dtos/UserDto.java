@@ -14,6 +14,6 @@ public class UserDto {
     private String email;
     private String firstName;
     private String lastName;
-    private OffsetDateTime createdAt;
-    private OffsetDateTime lastLoginAt;
+    private OffsetDateTime creationDate;
+    private OffsetDateTime lastLoginDate;
 }

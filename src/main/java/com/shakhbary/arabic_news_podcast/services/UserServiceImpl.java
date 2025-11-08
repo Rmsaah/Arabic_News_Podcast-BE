@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword())); // Hash password
         user.setFirstName(registrationRequest.getFirstName());
         user.setLastName(registrationRequest.getLastName());
-        user.setCreatedAt(OffsetDateTime.now());
+        user.setCreationDate(OffsetDateTime.now());
         user.setEnabled(true);
         user.setSecondsListened(0L);
 
@@ -73,8 +73,8 @@ public class UserServiceImpl implements UserService {
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
-                user.getCreatedAt(),
-                user.getLastLoginAt()
+                user.getCreationDate(),
+                user.getLastLoginDate()
         );
     }
 
@@ -92,8 +92,8 @@ public class UserServiceImpl implements UserService {
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
-                user.getCreatedAt(),
-                user.getLastLoginAt()
+                user.getCreationDate(),
+                user.getLastLoginDate()
         );
     }
 }
