@@ -5,11 +5,13 @@ import com.shakhbary.arabic_news_podcast.exceptions.ResourceNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -102,6 +104,20 @@ public class GlobalExceptionHandler {
 
         log.warn("Validation failed: {} field(s) with errors", errors.size());
         return ValidationError.of("Validation failed", errors);
+    }
+
+    /**
+     * Handle ResponseStatusException (for authorization failures, etc.).
+     * Returns appropriate status code and error message.
+     */
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ApiError> handleResponseStatus(ResponseStatusException ex) {
+        HttpStatus status = HttpStatus.resolve(ex.getStatusCode().value());
+        String errorType = status != null ? status.name() : "ERROR";
+
+        log.warn("{}: {}", errorType, ex.getReason());
+        ApiError error = ApiError.of(errorType, ex.getReason() != null ? ex.getReason() : "An error occurred");
+        return new ResponseEntity<>(error, status != null ? status : HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**

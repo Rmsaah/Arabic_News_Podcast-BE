@@ -9,11 +9,9 @@ import java.util.UUID;
 /**
  * DTO for rating an episode.
  * Used when a user submits a rating for a podcast episode.
+ * User is determined from authentication token.
  */
 public record RatingRequestDto(
-
-        @NotNull(message = "User ID is required")
-        UUID userId,
 
         @NotNull(message = "Episode ID is required")
         UUID episodeId,

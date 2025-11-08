@@ -22,36 +22,33 @@ public interface UserProfileService {
 
     /**
      * Track and accumulate user's total listening time.
-     * Validates that the requesting user has permission to update this user's data.
+     * User is identified by the requesting username from authentication.
      *
-     * @param userId The unique identifier of the user
      * @param secondsListened Number of seconds to add to user's total listening time
      * @param requestingUsername The username of the user making the request
      * @throws org.springframework.web.server.ResponseStatusException if unauthorized
      */
-    void trackListeningTime(UUID userId, long secondsListened, String requestingUsername);
+    void trackListeningTime(long secondsListened, String requestingUsername);
 
     /**
      * Update user's playback position for an episode.
-     * Validates that the requesting user has permission to update this user's data.
+     * User is identified by the requesting username from authentication.
      *
-     * @param userId The unique identifier of the user
      * @param episodeId The unique identifier of the episode
      * @param positionSeconds Current playback position in seconds
      * @param requestingUsername The username of the user making the request
      * @throws org.springframework.web.server.ResponseStatusException if unauthorized
      */
-    void updateEpisodeProgress(UUID userId, UUID episodeId, long positionSeconds, String requestingUsername);
+    void updateEpisodeProgress(UUID episodeId, long positionSeconds, String requestingUsername);
 
     /**
      * Mark an episode as completed by the user.
-     * Validates that the requesting user has permission to update this user's data.
+     * User is identified by the requesting username from authentication.
      *
-     * @param userId The unique identifier of the user
      * @param episodeId The unique identifier of the episode
      * @param positionSeconds Final playback position in seconds (usually total duration)
      * @param requestingUsername The username of the user making the request
      * @throws org.springframework.web.server.ResponseStatusException if unauthorized
      */
-    void markEpisodeCompleted(UUID userId, UUID episodeId, long positionSeconds, String requestingUsername);
+    void markEpisodeCompleted(UUID episodeId, long positionSeconds, String requestingUsername);
 }

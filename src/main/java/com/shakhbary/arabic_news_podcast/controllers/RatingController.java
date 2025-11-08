@@ -24,9 +24,9 @@ public class RatingController {
      * Submit a rating for an episode.
      * Users can rate episodes from 1 (lowest) to 5 (highest).
      * If a user has already rated an episode, the rating will be updated.
-     * Users can only submit ratings on their own behalf.
+     * User is determined from authentication token.
      *
-     * @param request Rating request containing user ID, episode ID, and rating value (1-5)
+     * @param request Rating request containing episode ID and rating value (1-5)
      * @param authentication Current authenticated user
      * @return Rating response with confirmation
      */
@@ -36,7 +36,6 @@ public class RatingController {
             @RequestBody @Valid RatingRequestDto request,
             Authentication authentication) {
         return ratingService.rateEpisode(
-                request.userId(),
                 request.episodeId(),
                 request.rating(),
                 authentication.getName()

@@ -15,38 +15,35 @@ public interface EpisodeProgressService {
 
     /**
      * Update user's progress for an episode.
-     * Validates that the requesting user has permission to update this user's progress.
+     * User is identified by the requesting username from authentication.
      *
-     * @param userId The user whose progress to update
      * @param updateDto Progress update data
      * @param requestingUsername The username of the user making the request
      * @return Updated progress information
      * @throws org.springframework.web.server.ResponseStatusException if unauthorized
      */
-    EpisodeProgressDto updateProgress(UUID userId, EpisodeProgressUpdateDto updateDto, String requestingUsername);
+    EpisodeProgressDto updateProgress(EpisodeProgressUpdateDto updateDto, String requestingUsername);
 
     /**
      * Get user's progress for a specific episode.
-     * Validates that the requesting user has permission to view this user's progress.
+     * User is identified by the requesting username from authentication.
      *
-     * @param userId The user whose progress to retrieve
      * @param episodeId The episode to get progress for
      * @param requestingUsername The username of the user making the request
      * @return Episode progress information
      * @throws org.springframework.web.server.ResponseStatusException if unauthorized
      */
-    EpisodeProgressDto getProgress(UUID userId, UUID episodeId, String requestingUsername);
+    EpisodeProgressDto getProgress(UUID episodeId, String requestingUsername);
 
     /**
      * Get all in-progress episodes for a user (for "Continue Listening" feature).
-     * Validates that the requesting user has permission to view this user's data.
+     * User is identified by the requesting username from authentication.
      *
-     * @param userId The user whose in-progress episodes to retrieve
      * @param requestingUsername The username of the user making the request
      * @return List of in-progress episodes with their current positions
      * @throws org.springframework.web.server.ResponseStatusException if unauthorized
      */
-    List<EpisodeProgressDto> getInProgressEpisodes(UUID userId, String requestingUsername);
+    List<EpisodeProgressDto> getInProgressEpisodes(String requestingUsername);
 
     /**
      * Get completed episodes for a user with pagination
@@ -61,14 +58,13 @@ public interface EpisodeProgressService {
 
     /**
      * Get user's listening statistics.
-     * Validates that the requesting user has permission to view this user's stats.
+     * User is identified by the requesting username from authentication.
      *
-     * @param userId The user whose stats to retrieve
      * @param requestingUsername The username of the user making the request
      * @return User's listening statistics
      * @throws org.springframework.web.server.ResponseStatusException if unauthorized
      */
-    UserListeningStatsDto getUserListeningStats(UUID userId, String requestingUsername);
+    UserListeningStatsDto getUserListeningStats(String requestingUsername);
 
     /**
      * DTO for episode analytics
