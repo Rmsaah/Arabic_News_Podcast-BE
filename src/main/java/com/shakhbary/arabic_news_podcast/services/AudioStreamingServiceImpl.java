@@ -7,6 +7,7 @@ import com.shakhbary.arabic_news_podcast.repositories.AudioRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -16,10 +17,12 @@ import java.util.UUID;
  * Service for generating playable URLs for podcast audio files.
  * Returns direct Google Cloud Storage URLs for public files,
  * or signed URLs with temporary access for private files.
+ * Only enabled when spring.cloud.gcp.storage.enabled=true
  */
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@ConditionalOnProperty(name = "spring.cloud.gcp.storage.enabled", havingValue = "true")
 public class AudioStreamingServiceImpl implements AudioStreamingService {
 
     private final AudioRepository audioRepository;

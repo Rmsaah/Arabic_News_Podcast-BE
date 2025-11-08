@@ -4,6 +4,7 @@ import com.google.cloud.storage.*;
 import com.shakhbary.arabic_news_podcast.services.CloudStorageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -16,9 +17,11 @@ import java.util.concurrent.TimeUnit;
  * Handles uploading, deleting, and checking files in Google Cloud Storage.
  *
  * Uses Spring Cloud GCP autoconfiguration for Storage client.
+ * Only enabled when spring.cloud.gcp.storage.enabled=true
  */
 @Service
 @Slf4j
+@ConditionalOnProperty(name = "spring.cloud.gcp.storage.enabled", havingValue = "true")
 public class CloudStorageServiceImpl implements CloudStorageService {
 
     private final Storage storage;

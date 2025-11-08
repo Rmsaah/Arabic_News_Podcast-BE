@@ -2,6 +2,7 @@ package com.shakhbary.arabic_news_podcast.controllers;
 
 import com.shakhbary.arabic_news_podcast.services.AudioStreamingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,10 +12,12 @@ import java.util.UUID;
  * REST controller for audio streaming endpoints.
  * Provides URLs for playing podcast episode audio files with support for both
  * public URLs and signed URLs with temporary access.
+ * Only enabled when spring.cloud.gcp.storage.enabled=true
  */
 @RestController
 @RequestMapping("/api/audio")
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "spring.cloud.gcp.storage.enabled", havingValue = "true")
 public class AudioController {
 
     private final AudioStreamingService audioStreamingService;
