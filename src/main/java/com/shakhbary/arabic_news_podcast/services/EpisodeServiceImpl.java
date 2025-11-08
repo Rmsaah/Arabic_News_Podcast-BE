@@ -62,7 +62,7 @@ public class EpisodeServiceImpl implements EpisodeService {
                 e.getId(),
                 e.getTitle(),
                 e.getDescription(),
-                e.getTranscript(),
+                e.getScriptUrlPath(),
                 e.getAudio() != null ? e.getAudio().getUrlPath() : null,
                 e.getAudio() != null ? e.getAudio().getDuration() : 0L,
                 avg != null ? avg : 0.0,
@@ -99,8 +99,8 @@ public class EpisodeServiceImpl implements EpisodeService {
         episode.setAudio(audio);
         episode.setTitle(request.getTitle());
         episode.setDescription(request.getDescription());
-        episode.setTranscript(request.getTranscriptUrlPath());
-        episode.setImageUrl(request.getImgUrl());
+        episode.setScriptUrlPath(request.getScriptUrlPath());
+        episode.setImageUrl(request.getImageUrl());
         episode.setCreatedAt(OffsetDateTime.now());
 
         episode = episodeRepository.save(episode);

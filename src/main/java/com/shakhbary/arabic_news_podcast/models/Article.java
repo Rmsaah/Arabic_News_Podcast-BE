@@ -43,14 +43,11 @@ public class Article {
     @Column(name = "published_at", nullable = false)
     private OffsetDateTime publishedAt;
 
-    @Column(name = "content_raw", nullable = false)
-    private String contentRaw;
+    @Column(name = "content_raw_url", nullable = false)
+    private String contentRawUrl;
 
-    @Column(name = "content_cleaned", nullable = false)
-    private String contentCleaned;
-
-    @Column(name = "url_path", nullable = false)
-    private String urlPath;
+    @Column(name = "script_url", nullable = false)
+    private String scriptUrl;
 
     @CreatedDate
     @Column(name = "fetched_at", nullable = false, updatable = false)

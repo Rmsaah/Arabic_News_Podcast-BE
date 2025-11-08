@@ -3,9 +3,6 @@ package com.shakhbary.arabic_news_podcast.services;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeDto;
-
-import java.util.List;
-
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeJsonDto;
 import com.shakhbary.arabic_news_podcast.models.Article;
 import com.shakhbary.arabic_news_podcast.models.Audio;
@@ -25,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -83,16 +81,16 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
             String uniqueId = UUID.randomUUID().toString();
 
             // 1. Process Article entity
-            Article article = processArticleEntity(jsonDto.getArticle(), uniqueId);
-            log.info("Article created with ID: {}", article.getId());
+            Article article = processArticleEntity(jsonDto.getArticle());
+            log.info("✅ Article created with ID: {}", article.getId());
 
             // 2. Process Audio entity
             Audio audio = processAudioEntity(jsonDto.getAudio(), article, uniqueId);
-            log.info("Audio created with ID: {}", audio.getId());
+            log.info("✅ Audio created with ID: {}", audio.getId());
 
             // 3. Process Episode entity
             Episode episode = processEpisodeEntity(jsonDto.getEpisode(), article, audio);
-            log.info("Episode created with ID: {}", episode.getId());
+            log.info("✅ Episode created with ID: {}", episode.getId());
 
             log.info("Successfully created complete episode: {}", episode.getTitle());
 
@@ -140,7 +138,7 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
     /**
      * Process and create Article entity from JSON data
      */
-    private Article processArticleEntity(EpisodeJsonDto.ArticleData articleData, String uniqueId) {
+    private Article processArticleEntity(EpisodeJsonDto.ArticleData articleData) {
         try {
             Article article = new Article();
 
@@ -155,21 +153,11 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
                 article.setPublishedAt(OffsetDateTime.parse(articleData.getPublishedAt()));
             }
 
-            // Set content
-            article.setContentRaw(articleData.getContentRaw());
-            article.setContentCleaned(articleData.getContentCleaned() != null
-                    ? articleData.getContentCleaned()
-                    : articleData.getContentRaw());
-
-            // Handle URL path - use provided or upload content
-            String urlPath = articleData.getUrlPath();
-            if (urlPath == null || urlPath.isBlank()) {
-                // If no URL provided and we have content, upload it
-                if (articleData.getContentRaw() != null && !articleData.getContentRaw().isBlank()) {
-                    urlPath = processTranscript(articleData.getContentRaw(), uniqueId);
-                }
-            }
-            article.setUrlPath(urlPath);
+            // Set content URLs (must be provided as cloud storage URLs)
+            article.setContentRawUrl(articleData.getContentRawUrl());
+            article.setScriptUrl(articleData.getScriptUrl() != null
+                    ? articleData.getScriptUrl()
+                    : articleData.getContentRawUrl());
 
             // Set fetch timestamp
             article.setFetchedAt(OffsetDateTime.now());
@@ -233,14 +221,14 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
             // Set episode fields
             episode.setTitle(episodeData.getTitle());
             episode.setDescription(episodeData.getDescription());
-            episode.setImageUrl(episodeData.getImgUrl());
+            episode.setImageUrl(episodeData.getImageUrl());
 
-            // Set transcript URL - use provided or fall back to article URL
-            String transcriptUrl = episodeData.getTranscriptUrlPath();
-            if (transcriptUrl == null || transcriptUrl.isBlank()) {
-                transcriptUrl = article.getUrlPath();
+            // Set script URL - use provided or fall back to article script URL
+            String scriptUrl = episodeData.getScriptUrlPath();
+            if (scriptUrl == null || scriptUrl.isBlank()) {
+                scriptUrl = article.getScriptUrl();
             }
-            episode.setTranscript(transcriptUrl);
+            episode.setScriptUrlPath(scriptUrl);
 
             // Set creation timestamp
             episode.setCreatedAt(OffsetDateTime.now());
@@ -308,7 +296,7 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
                 episode.getId(),
                 episode.getTitle(),
                 episode.getDescription(),
-                episode.getTranscript(),
+                episode.getScriptUrlPath(),
                 episode.getAudio() != null ? episode.getAudio().getUrlPath() : null,
                 episode.getAudio() != null ? episode.getAudio().getDuration() : 0L,
                 0.0, // No ratings yet

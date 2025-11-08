@@ -44,8 +44,8 @@ public class Episode {
     @Column(name = "description", length = 500)
     private String description;
 
-    @Column(name = "transcript", nullable = false)
-    private String transcript;
+    @Column(name = "script_url_path", nullable = false)
+    private String scriptUrlPath;
 
     @Column(name = "image_url")
     private String imageUrl;

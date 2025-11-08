@@ -38,9 +38,8 @@ public class EpisodeJsonDto {
         private String author;
         private String publisher;
         private String publishedAt;           // ISO date string
-        private String contentRaw;            // Full raw text content
-        private String contentCleaned;        // Cleaned/processed text
-        private String urlPath;               // URL to article/transcript (optional, will be generated if not provided)
+        private String contentRawUrl;         // URL to raw text content in cloud storage
+        private String scriptUrl;             // URL to processed/cleaned script in cloud storage
     }
 
     /**
@@ -65,7 +64,7 @@ public class EpisodeJsonDto {
     public static class EpisodeData {
         private String title;
         private String description;
-        private String transcriptUrlPath;     // URL to transcript (optional, uses article.urlPath if not provided)
-        private String imgUrl;                // Episode thumbnail/cover image URL
+        private String scriptUrlPath;     // // URL to script (optional, uses article.scriptUrl if not provided)
+        private String imageUrl;                // Episode thumbnail/cover image URL
     }
 }

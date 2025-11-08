@@ -18,13 +18,13 @@ public class EpisodeCreateRequestDto {
     private String description;
 
     @Size(max = 500)
-    private String imgUrl;
+    private String imageUrl;
 
     // References to existing related resources OR triggers to create them
     private UUID articleId;            // if existing article is already created
 
     @Size(max = 1000)
-    private String transcriptUrlPath;  // remote path to transcript text (LLM output)
+    private String scriptUrlPath;  // remote path to transcript text (LLM output)
 
     @Size(max = 1000)
     private String audioUrlPath;       // remote path to audio file (TTS output)
