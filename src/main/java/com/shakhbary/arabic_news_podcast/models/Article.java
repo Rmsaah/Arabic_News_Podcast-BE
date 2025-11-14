@@ -1,13 +1,27 @@
 package com.shakhbary.arabic_news_podcast.models;
 
-import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import org.springframework.data.annotation.CreatedDate;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Setter
 @Getter
@@ -18,7 +32,8 @@ import java.util.UUID;
         indexes = {
                 @Index(name = "idx_article_category", columnList = "category"),
                 @Index(name = "idx_article_author", columnList = "author"),
-                @Index(name = "idx_article_fetch_date", columnList = "fetch_date")
+                @Index(name = "idx_article_fetched_at", columnList = "fetched_at"),
+                @Index(name = "idx_article_status", columnList = "status")  // NEW
         })
 public class Article {
 
@@ -43,23 +58,40 @@ public class Article {
     @Column(name = "publication_date")
     private OffsetDateTime publicationDate;
 
-    @Column(name = "content_raw_url", nullable = false)
-    private String contentRawUrl;
+    @Column(name = "content_raw", nullable = false, columnDefinition = "LONGTEXT")
+    private String contentRaw;
 
-    @Column(name = "script_url", nullable = false)
-    private String scriptUrl;
+    @Column(name = "content_cleaned", nullable = false, columnDefinition = "LONGTEXT")
+    private String contentCleaned;
+
+    @Column(name = "url_path", nullable = false)
+    private String urlPath;
 
     @CreatedDate
     @Column(name = "fetch_date", nullable = false, updatable = false)
     private OffsetDateTime fetchDate;
 
+    // NEW: Track processing status
+    @Column(name = "status", length = 20)
+    private String status; // SCRAPED, SCRIPT_GENERATED, AUDIO_GENERATED, COMPLETED, FAILED
+
     /* RELATIONAL MAPPINGS */
 
     @ToString.Exclude
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Audio> audioFiles = new ArrayList<>(); // Article HAS MANY Audio
+    private List<Audio> audioFiles = new ArrayList<>();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Episode> episodes = new ArrayList<>(); // Article HAS MANY Episodes
+    private List<Episode> episodes = new ArrayList<>();
+    
+    @PrePersist
+    protected void onCreate() {
+        if (fetchedAt == null) {
+            fetchedAt = OffsetDateTime.now();
+        }
+        if (status == null) {
+            status = "SCRAPED";
+        }
+    }
 }
