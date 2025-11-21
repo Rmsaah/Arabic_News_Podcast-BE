@@ -30,38 +30,29 @@ public class EpisodeServiceImpl implements EpisodeService {
     private final ArticleRepository articleRepository;
     private final AudioRepository audioRepository;
 
-    @Override
-    @Transactional(readOnly = true)
-    public Page<EpisodeDto> listEpisodes(Pageable pageable) {
-        return episodeRepository.findAll(pageable)
-                .map(e -> {
-                    Double avg = ratingRepository.findAverageRatingForEpisode(e.getId());
-                    long count = ratingRepository.countRatingsForEpisode(e.getId());
-                    return new EpisodeDto(
-                            e.getId(),
-                            e.getTitle(),
-                            e.getAudio() != null ? e.getAudio().getDuration() : 0L,
-                            avg != null ? avg : 0.0,
-                            (int) count,
-                            e.getImageUrl(),
-                            truncate(e.getDescription(), 180),
-                            e.getCreationDate()
-                    );
-                });
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public EpisodeDto getEpisode(UUID episodeId) {
-        Episode e = episodeRepository.findById(episodeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Episode not found: " + episodeId));
+    /**
+     * Maps Episode entity to EpisodeDto with all fields populated.
+     * This is the single source of truth for episode DTO mapping.
+     *
+     * @param e Episode entity to map
+     * @param truncateDescription If true, truncates description to 180 characters for list views
+     * @return Fully populated EpisodeDto with all 12 fields
+     */
+    private EpisodeDto mapToDto(Episode e, boolean truncateDescription) {
+        // Fetch ratings data
         Double avg = ratingRepository.findAverageRatingForEpisode(e.getId());
         long count = ratingRepository.countRatingsForEpisode(e.getId());
 
+        // Truncate description if requested (for list views)
+        String description = truncateDescription
+                ? truncate(e.getDescription(), 180)
+                : e.getDescription();
+
+        // Use full 12-parameter constructor to ensure all fields are populated
         return new EpisodeDto(
                 e.getId(),
                 e.getTitle(),
-                e.getDescription(),
+                description,
                 e.getScriptUrlPath(),
                 e.getAudio() != null ? e.getAudio().getUrlPath() : null,
                 e.getAudio() != null ? e.getAudio().getDuration() : 0L,
@@ -75,24 +66,54 @@ public class EpisodeServiceImpl implements EpisodeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Page<EpisodeDto> listEpisodes(Pageable pageable) {
+        return episodeRepository.findAll(pageable)
+                .map(e -> mapToDto(e, true));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public EpisodeDto getEpisode(UUID episodeId) {
+        Episode e = episodeRepository.findById(episodeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Episode not found: " + episodeId));
+
+        // Validate audio exists (critical for playback)
+        if (e.getAudio() == null || e.getAudio().getUrlPath() == null || e.getAudio().getUrlPath().isBlank()) {
+            throw new IllegalStateException(
+                    "Episode " + episodeId + " has no associated audio file. " +
+                            "All episodes must have valid audio for playback."
+            );
+        }
+
+        return mapToDto(e, false);
+    }
+
+    @Override
     @Transactional
     public EpisodeDto createEpisode(EpisodeCreateRequestDto request) {
+        // Validate required audio URL (critical for playback)
+        if (request.getAudioUrlPath() == null || request.getAudioUrlPath().isBlank()) {
+            throw new IllegalArgumentException(
+                    "Audio URL is required for all episodes. " +
+                            "Episodes cannot be created without valid audio files."
+            );
+        }
+
         Article article = null;
         if (request.getArticleId() != null) {
             article = articleRepository.findById(request.getArticleId())
                     .orElseThrow(() -> new ResourceNotFoundException("Article not found: " + request.getArticleId()));
         }
 
-        Audio audio = null;
-        if (request.getAudioUrlPath() != null) {
-            audio = new Audio();
-            audio.setArticle(article);
-            audio.setDuration(request.getDurationSeconds() != null ? request.getDurationSeconds() : 0L);
-            audio.setFormat(request.getAudioFormat());
-            audio.setUrlPath(request.getAudioUrlPath());
-            audio.setCreationDate(OffsetDateTime.now());
-            audio = audioRepository.save(audio);
-        }
+        // Create audio entity (required)
+        Audio audio = new Audio();
+        audio.setArticle(article);
+        audio.setDuration(request.getDurationSeconds() != null ? request.getDurationSeconds() : 0L);
+        audio.setFormat(request.getAudioFormat() != null ? request.getAudioFormat() : "mp3");
+        audio.setUrlPath(request.getAudioUrlPath());
+        audio.setCreationDate(OffsetDateTime.now());
+        audio = audioRepository.save(audio);
 
         Episode episode = new Episode();
         episode.setArticle(article);
@@ -114,20 +135,9 @@ public class EpisodeServiceImpl implements EpisodeService {
         java.time.OffsetDateTime now = java.time.OffsetDateTime.now();
         java.time.OffsetDateTime startOfDay = now.toLocalDate().atStartOfDay().atOffset(now.getOffset());
         Page<Episode> page = episodeRepository.findByCreationDateAfterOrderByCreationDateDesc(startOfDay, PageRequest.of(0, limit));
-        return page.stream().map(e -> {
-            Double avg = ratingRepository.findAverageRatingForEpisode(e.getId());
-            long count = ratingRepository.countRatingsForEpisode(e.getId());
-            return new EpisodeDto(
-                    e.getId(),
-                    e.getTitle(),
-                    e.getAudio() != null ? e.getAudio().getDuration() : 0L,
-                    avg != null ? avg : 0.0,
-                    (int) count,
-                    e.getImageUrl(),
-                    truncate(e.getDescription(), 180),
-                    e.getCreationDate()
-            );
-        }).toList();
+        return page.stream()
+                .map(e -> mapToDto(e, true))
+                .toList();
     }
 
     @Override
@@ -137,20 +147,7 @@ public class EpisodeServiceImpl implements EpisodeService {
                 (title == null || title.isBlank()) ? null : title,
                 (category == null || category.isBlank()) ? null : category,
                 pageable);
-        return result.map(e -> {
-            Double avg = ratingRepository.findAverageRatingForEpisode(e.getId());
-            long count = ratingRepository.countRatingsForEpisode(e.getId());
-            return new EpisodeDto(
-                    e.getId(),
-                    e.getTitle(),
-                    e.getAudio() != null ? e.getAudio().getDuration() : 0L,
-                    avg != null ? avg : 0.0,
-                    (int) count,
-                    e.getImageUrl(),
-                    truncate(e.getDescription(), 180),
-                    e.getCreationDate()
-            );
-        });
+        return result.map(e -> mapToDto(e, true));
     }
 
     private String truncate(String s, int max) {

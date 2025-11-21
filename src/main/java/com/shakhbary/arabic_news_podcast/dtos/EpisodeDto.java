@@ -22,7 +22,17 @@ public class EpisodeDto {
     private String articleTitle;
     private String imageUrl;
 
-    // Constructor for list view (without transcript)
+    /**
+     * Constructor for list view (without transcript).
+     *
+     * @deprecated This constructor is incomplete and omits critical fields like audioUrlPath.
+     *             Frontend teams have reported issues with missing audio URLs when using this constructor.
+     *             Use the full 12-parameter constructor or the all-args constructor instead.
+     *             This constructor will be removed in a future version.
+     *
+     * @see #EpisodeDto(UUID, String, String, String, String, long, double, int, OffsetDateTime, UUID, String, String)
+     */
+    @Deprecated(since = "1.0", forRemoval = true)
     public EpisodeDto(UUID id, String title, long durationSeconds, double averageRating,
                       int ratingCount, String imageUrl, String description, OffsetDateTime creationDate) {
         this.id = id;
@@ -33,6 +43,7 @@ public class EpisodeDto {
         this.imageUrl = imageUrl;
         this.description = description;
         this.creationDate = creationDate;
+        // WARNING: audioUrlPath, scriptUrlPath, articleId, and articleTitle are null!
     }
 
     // Constructor for creation response
