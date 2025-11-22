@@ -18,35 +18,20 @@ public class EpisodeDto {
     private double averageRating;
     private int ratingCount;
     private OffsetDateTime creationDate;
+
+    // Article reference fields
     private UUID articleId;
     private String articleTitle;
+    private String articleAuthor;      // Author of the source article
+    private String articlePublisher;   // Publisher of the source article
+    private String articleCategory;    // Category of the source article
+
     private String imageUrl;
 
     /**
-     * Constructor for list view (without transcript).
-     *
-     * @deprecated This constructor is incomplete and omits critical fields like audioUrlPath.
-     *             Frontend teams have reported issues with missing audio URLs when using this constructor.
-     *             Use the full 12-parameter constructor or the all-args constructor instead.
-     *             This constructor will be removed in a future version.
-     *
-     * @see #EpisodeDto(UUID, String, String, String, String, long, double, int, OffsetDateTime, UUID, String, String)
+     * Simplified constructor for creation response.
+     * Returns only the ID and creation timestamp after successfully creating an episode.
      */
-    @Deprecated(since = "1.0", forRemoval = true)
-    public EpisodeDto(UUID id, String title, long durationSeconds, double averageRating,
-                      int ratingCount, String imageUrl, String description, OffsetDateTime creationDate) {
-        this.id = id;
-        this.title = title;
-        this.durationSeconds = durationSeconds;
-        this.averageRating = averageRating;
-        this.ratingCount = ratingCount;
-        this.imageUrl = imageUrl;
-        this.description = description;
-        this.creationDate = creationDate;
-        // WARNING: audioUrlPath, scriptUrlPath, articleId, and articleTitle are null!
-    }
-
-    // Constructor for creation response
     public EpisodeDto(UUID id, OffsetDateTime creationDate) {
         this.id = id;
         this.creationDate = creationDate;

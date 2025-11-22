@@ -36,7 +36,7 @@ public class EpisodeServiceImpl implements EpisodeService {
      *
      * @param e Episode entity to map
      * @param truncateDescription If true, truncates description to 180 characters for list views
-     * @return Fully populated EpisodeDto with all 12 fields
+     * @return Fully populated EpisodeDto with all 15 fields (including Article metadata)
      */
     private EpisodeDto mapToDto(Episode e, boolean truncateDescription) {
         // Fetch ratings data
@@ -48,7 +48,7 @@ public class EpisodeServiceImpl implements EpisodeService {
                 ? truncate(e.getDescription(), 180)
                 : e.getDescription();
 
-        // Use full 12-parameter constructor to ensure all fields are populated
+        // Use full 15-parameter constructor to ensure all fields are populated
         return new EpisodeDto(
                 e.getId(),
                 e.getTitle(),
@@ -61,6 +61,9 @@ public class EpisodeServiceImpl implements EpisodeService {
                 e.getCreationDate(),
                 e.getArticle() != null ? e.getArticle().getId() : null,
                 e.getArticle() != null ? e.getArticle().getTitle() : null,
+                e.getArticle() != null ? e.getArticle().getAuthor() : null,
+                e.getArticle() != null ? e.getArticle().getPublisher() : null,
+                e.getArticle() != null ? e.getArticle().getCategory() : null,
                 e.getImageUrl()
         );
     }
