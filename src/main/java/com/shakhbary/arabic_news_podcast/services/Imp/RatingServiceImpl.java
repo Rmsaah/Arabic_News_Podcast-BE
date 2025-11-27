@@ -1,4 +1,10 @@
-package com.shakhbary.arabic_news_podcast.services;
+package com.shakhbary.arabic_news_podcast.services.Imp;
+
+import java.time.OffsetDateTime;
+import java.util.UUID;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.shakhbary.arabic_news_podcast.dtos.RatingResponseDto;
 import com.shakhbary.arabic_news_podcast.exceptions.ResourceNotFoundException;
@@ -8,13 +14,9 @@ import com.shakhbary.arabic_news_podcast.models.User;
 import com.shakhbary.arabic_news_podcast.repositories.EpisodeRepository;
 import com.shakhbary.arabic_news_podcast.repositories.RatingRepository;
 import com.shakhbary.arabic_news_podcast.repositories.UserRepository;
+import com.shakhbary.arabic_news_podcast.services.RatingService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.OffsetDateTime;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
