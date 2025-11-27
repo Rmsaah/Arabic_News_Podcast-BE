@@ -1,6 +1,7 @@
 package com.shakhbary.arabic_news_podcast.controllers;
 
 import com.shakhbary.arabic_news_podcast.exceptions.BadRequestException;
+import com.shakhbary.arabic_news_podcast.exceptions.DuplicateResourceException;
 import com.shakhbary.arabic_news_podcast.exceptions.ResourceNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -104,6 +105,16 @@ public class GlobalExceptionHandler {
 
         log.warn("Validation failed: {} field(s) with errors", errors.size());
         return ValidationError.of("Validation failed", errors);
+    }
+
+    /**
+     * Handle DuplicateResourceException (409 Conflict).
+     */
+    @ExceptionHandler(DuplicateResourceException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handleDuplicateResource(DuplicateResourceException ex) {
+        log.warn("Duplicate resource: {}", ex.getMessage());
+        return ApiError.of("CONFLICT", ex.getMessage());
     }
 
     /**
