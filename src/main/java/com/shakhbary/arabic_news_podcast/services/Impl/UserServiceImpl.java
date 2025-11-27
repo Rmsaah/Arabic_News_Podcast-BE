@@ -1,4 +1,16 @@
-package com.shakhbary.arabic_news_podcast.services.Impl;
+package com.shakhbary.arabic_news_podcast.services.Imp;
+
+import java.time.OffsetDateTime;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.shakhbary.arabic_news_podcast.dtos.UserDto;
 import com.shakhbary.arabic_news_podcast.dtos.UserRegistrationRequestDto;
@@ -8,20 +20,9 @@ import com.shakhbary.arabic_news_podcast.models.Role;
 import com.shakhbary.arabic_news_podcast.models.User;
 import com.shakhbary.arabic_news_podcast.repositories.RoleRepository;
 import com.shakhbary.arabic_news_podcast.repositories.UserRepository;
-
 import com.shakhbary.arabic_news_podcast.services.UserService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.time.OffsetDateTime;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
