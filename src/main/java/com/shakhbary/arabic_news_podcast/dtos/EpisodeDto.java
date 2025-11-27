@@ -1,9 +1,11 @@
 package com.shakhbary.arabic_news_podcast.dtos;
 
-import lombok.*;
-
 import java.time.OffsetDateTime;
 import java.util.UUID;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -35,5 +37,10 @@ public class EpisodeDto {
     public EpisodeDto(UUID id, OffsetDateTime creationDate) {
         this.id = id;
         this.creationDate = creationDate;
+    }
+
+    public EpisodeDto(UUID id2, String title2, String description2, String scriptUrlPath2, Object object, long l,
+            double d, int count, OffsetDateTime creationDate2, Object object2, Object object3, String imageUrl2) {
+        //TODO Auto-generated constructor stub
     }
 }
