@@ -1,4 +1,12 @@
-package com.shakhbary.arabic_news_podcast.services;
+package com.shakhbary.arabic_news_podcast.services.Imp;
+
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeProgressDto;
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeProgressUpdateDto;
@@ -9,15 +17,9 @@ import com.shakhbary.arabic_news_podcast.models.User;
 import com.shakhbary.arabic_news_podcast.repositories.EpisodeProgressRepository;
 import com.shakhbary.arabic_news_podcast.repositories.EpisodeRepository;
 import com.shakhbary.arabic_news_podcast.repositories.UserRepository;
+import com.shakhbary.arabic_news_podcast.services.EpisodeProgressService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
