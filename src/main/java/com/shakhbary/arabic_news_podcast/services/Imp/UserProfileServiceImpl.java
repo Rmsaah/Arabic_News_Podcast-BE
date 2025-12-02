@@ -1,4 +1,13 @@
-package com.shakhbary.arabic_news_podcast.services;
+package com.shakhbary.arabic_news_podcast.services.Imp;
+
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeHistoryDto;
 import com.shakhbary.arabic_news_podcast.dtos.UserProfileDto;
@@ -11,16 +20,9 @@ import com.shakhbary.arabic_news_podcast.repositories.EpisodeProgressRepository;
 import com.shakhbary.arabic_news_podcast.repositories.EpisodeRepository;
 import com.shakhbary.arabic_news_podcast.repositories.RatingRepository;
 import com.shakhbary.arabic_news_podcast.repositories.UserRepository;
+import com.shakhbary.arabic_news_podcast.services.UserProfileService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
