@@ -3,13 +3,14 @@ package com.shakhbary.arabic_news_podcast.services.Impl;
 import java.io.File;
 import java.io.IOException;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter; // <-- NEW IMPORT
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -51,6 +52,7 @@ public class EpisodeAutomationServiceV2 implements EpisodeAutomationService {
      * Calls Python agent to do all the heavy lifting
      */
     @Transactional
+    @Scheduled(cron = "0 0 9 * * *") // CRON expression for 9:00 AM daily
     public List<EpisodeDto> automatedDailyPipeline() {
         try {
             log.info("🚀 Starting automated daily pipeline...");
