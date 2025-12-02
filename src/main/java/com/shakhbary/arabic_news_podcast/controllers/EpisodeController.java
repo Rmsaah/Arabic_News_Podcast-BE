@@ -1,6 +1,5 @@
 package com.shakhbary.arabic_news_podcast.controllers;
 
-import com.shakhbary.arabic_news_podcast.dtos.EpisodeCreateRequestDto;
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeDto;
 import com.shakhbary.arabic_news_podcast.services.EpisodeService;
 
@@ -8,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -53,19 +51,6 @@ public class EpisodeController {
     @GetMapping("/api/episodes/{id}")
     public EpisodeDto getEpisode(@PathVariable("id") UUID id) {
         return episodeService.getEpisode(id);
-    }
-
-    /**
-     * Create a new episode.
-     * Admin endpoint - should be protected by authentication.
-     *
-     * @param request Episode creation request with all required fields
-     * @return Created episode with generated ID
-     */
-    @PostMapping("/api/admin/episodes")
-    @ResponseStatus(HttpStatus.CREATED)
-    public EpisodeDto createEpisode(@RequestBody @jakarta.validation.Valid EpisodeCreateRequestDto request) {
-        return episodeService.createEpisode(request);
     }
 
     /**

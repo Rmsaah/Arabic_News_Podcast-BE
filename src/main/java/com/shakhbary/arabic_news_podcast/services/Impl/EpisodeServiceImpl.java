@@ -1,13 +1,4 @@
-package com.shakhbary.arabic_news_podcast.services.Imp;
-
-import java.time.OffsetDateTime;
-import java.util.UUID;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+package com.shakhbary.arabic_news_podcast.services.Impl;
 
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeCreateRequestDto;
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeDto;
@@ -22,6 +13,14 @@ import com.shakhbary.arabic_news_podcast.repositories.RatingRepository;
 import com.shakhbary.arabic_news_podcast.services.EpisodeService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.OffsetDateTime;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +37,7 @@ public class EpisodeServiceImpl implements EpisodeService {
      *
      * @param e Episode entity to map
      * @param truncateDescription If true, truncates description to 180 characters for list views
-     * @return Fully populated EpisodeDto with all 12 fields
+     * @return Fully populated EpisodeDto with all 15 fields (including Article metadata)
      */
     private EpisodeDto mapToDto(Episode e, boolean truncateDescription) {
         // Fetch ratings data
@@ -50,7 +49,7 @@ public class EpisodeServiceImpl implements EpisodeService {
                 ? truncate(e.getDescription(), 180)
                 : e.getDescription();
 
-        // Use full 12-parameter constructor to ensure all fields are populated
+        // Use full 15-parameter constructor to ensure all fields are populated
         return new EpisodeDto(
                 e.getId(),
                 e.getTitle(),
@@ -63,6 +62,9 @@ public class EpisodeServiceImpl implements EpisodeService {
                 e.getCreationDate(),
                 e.getArticle() != null ? e.getArticle().getId() : null,
                 e.getArticle() != null ? e.getArticle().getTitle() : null,
+                e.getArticle() != null ? e.getArticle().getAuthor() : null,
+                e.getArticle() != null ? e.getArticle().getPublisher() : null,
+                e.getArticle() != null ? e.getArticle().getCategory() : null,
                 e.getImageUrl()
         );
     }

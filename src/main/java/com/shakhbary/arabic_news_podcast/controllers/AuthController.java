@@ -47,7 +47,6 @@ public class AuthController {
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
-    // ========== ADD THIS NEW ENDPOINT ==========
     /**
      * Login endpoint - validates credentials and returns user info.
      * Client should store credentials and use Basic Auth for subsequent requests.

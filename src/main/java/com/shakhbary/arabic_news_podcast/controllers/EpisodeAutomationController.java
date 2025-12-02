@@ -2,11 +2,9 @@ package com.shakhbary.arabic_news_podcast.controllers;
 
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeDto;
 import com.shakhbary.arabic_news_podcast.exceptions.BadRequestException;
-import com.shakhbary.arabic_news_podcast.exceptions.ResourceNotFoundException;
 import com.shakhbary.arabic_news_podcast.services.EpisodeAutomationService;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -18,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
@@ -127,36 +124,6 @@ public class EpisodeAutomationController {
     }
 
     /**
-     * Process episodes from a JSON file path on the server.
-     * <p>
-     * Security: Only files within the configured allowed directory can be processed
-     * to prevent path traversal attacks.
-     *
-     * @param request Request containing file path
-     * @return Response with list of created episodes
-     */
-    @PostMapping("/process-file")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AutomationResponse> processFileFromPath(
-            @RequestBody @Valid FileProcessRequest request) {
-
-        // Security: Validate file path to prevent path traversal
-        validateFilePath(request.filePath());
-
-        List<EpisodeDto> createdEpisodes = episodeAutomationService
-                .processEpisodesFromJson(request.filePath());
-
-        log.info("Successfully processed {} episodes from file: {}",
-                createdEpisodes.size(), request.filePath());
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new AutomationResponse(
-                        "Successfully processed " + createdEpisodes.size() + " episodes from file",
-                        createdEpisodes
-                ));
-    }
-
-    /**
      * Validates uploaded JSON file.
      *
      * @param file The multipart file to validate
@@ -185,54 +152,6 @@ public class EpisodeAutomationController {
     }
 
     /**
-     * Validates file path to prevent path traversal attacks.
-     * <p>
-     * Security: Ensures the file path is within the allowed directory
-     * and the file exists.
-     *
-     * @param filePath The file path to validate
-     * @throws BadRequestException if path is invalid or not in allowed directory
-     * @throws ResourceNotFoundException if file does not exist
-     */
-    private void validateFilePath(String filePath) {
-        try {
-            Path path = Paths.get(filePath).toAbsolutePath().normalize();
-            Path allowedDir = Paths.get(allowedDirectory).toAbsolutePath().normalize();
-
-            // Security: Check if path is within allowed directory
-            if (!path.startsWith(allowedDir)) {
-                log.warn("Path traversal attempt detected: {} (allowed: {})", path, allowedDir);
-                throw new BadRequestException(
-                        "Invalid file path: must be within allowed directory " + allowedDirectory
-                );
-            }
-
-            // Check if file exists
-            if (!Files.exists(path)) {
-                throw new ResourceNotFoundException("File not found: " + filePath);
-            }
-
-            // Check if it's actually a file (not a directory)
-            if (!Files.isRegularFile(path)) {
-                throw new BadRequestException("Path must be a regular file, not a directory");
-            }
-
-            // Check if it's a JSON file
-            if (!path.toString().toLowerCase().endsWith(".json")) {
-                throw new BadRequestException("File must be a JSON file (.json extension required)");
-            }
-
-            log.debug("File path validation passed: {}", path);
-
-        } catch (BadRequestException | ResourceNotFoundException e) {
-            throw e; // Re-throw our custom exceptions
-        } catch (Exception e) {
-            log.error("Error validating file path: {}", filePath, e);
-            throw new BadRequestException("Invalid file path: " + e.getMessage());
-        }
-    }
-
-    /**
      * Response DTO for automation endpoints.
      * Simplified to remove redundant fields (success flag, processedCount).
      *
@@ -244,13 +163,4 @@ public class EpisodeAutomationController {
             List<EpisodeDto> episodes
     ) {}
 
-    /**
-     * Request DTO for file path processing.
-     *
-     * @param filePath Absolute path to JSON file on server
-     */
-    public record FileProcessRequest(
-            @NotBlank(message = "File path is required")
-            String filePath
-    ) {}
 }

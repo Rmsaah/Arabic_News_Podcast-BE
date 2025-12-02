@@ -1,10 +1,16 @@
-package com.shakhbary.arabic_news_podcast.services.Imp;
+package com.shakhbary.arabic_news_podcast.services.Impl;
 
-import java.time.OffsetDateTime;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import com.shakhbary.arabic_news_podcast.dtos.UserDto;
+import com.shakhbary.arabic_news_podcast.dtos.UserRegistrationRequestDto;
+import com.shakhbary.arabic_news_podcast.exceptions.DuplicateResourceException;
+import com.shakhbary.arabic_news_podcast.exceptions.ResourceNotFoundException;
+import com.shakhbary.arabic_news_podcast.models.Role;
+import com.shakhbary.arabic_news_podcast.models.User;
+import com.shakhbary.arabic_news_podcast.repositories.RoleRepository;
+import com.shakhbary.arabic_news_podcast.repositories.UserRepository;
 
+import com.shakhbary.arabic_news_podcast.services.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,16 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.shakhbary.arabic_news_podcast.dtos.UserDto;
-import com.shakhbary.arabic_news_podcast.dtos.UserRegistrationRequestDto;
-import com.shakhbary.arabic_news_podcast.exceptions.ResourceNotFoundException;
-import com.shakhbary.arabic_news_podcast.models.Role;
-import com.shakhbary.arabic_news_podcast.models.User;
-import com.shakhbary.arabic_news_podcast.repositories.RoleRepository;
-import com.shakhbary.arabic_news_podcast.repositories.UserRepository;
-import com.shakhbary.arabic_news_podcast.services.UserService;
-
-import lombok.RequiredArgsConstructor;
+import java.time.OffsetDateTime;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -36,12 +36,12 @@ public class UserServiceImpl implements UserService {
     public UserDto registerNewUser(UserRegistrationRequestDto registrationRequest) {
         // Check if username already exists
         if (userRepository.existsByUsername(registrationRequest.getUsername())) {
-            throw new RuntimeException("Username is already taken");
+            throw new DuplicateResourceException("Username is already taken");
         }
 
         // Check if email already exists
         if (userRepository.existsByEmail(registrationRequest.getEmail())) {
-            throw new RuntimeException("Email is already registered");
+            throw new DuplicateResourceException("Email is already registered");
         }
 
         // Create new user

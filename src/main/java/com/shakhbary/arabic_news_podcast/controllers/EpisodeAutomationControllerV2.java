@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeDto;
-import com.shakhbary.arabic_news_podcast.services.Imp.EpisodeAutomationServiceV2;
+import com.shakhbary.arabic_news_podcast.services.Impl.EpisodeAutomationServiceV2;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class EpisodeAutomationControllerV2 {
      */
     @PostMapping("/run-daily-pipeline")
     public ResponseEntity<?> runDailyPipeline() {
-        log.info("🚀 API: Running daily podcast pipeline...");
+        log.info("API: Running daily podcast pipeline...");
         
         try {
             List<EpisodeDto> episodes = episodeAutomationService.automatedDailyPipeline();
@@ -41,7 +41,7 @@ public class EpisodeAutomationControllerV2 {
                 "episodes", episodes
             ));
         } catch (Exception e) {
-            log.error("❌ Pipeline failed: {}", e.getMessage());
+            log.error("Pipeline failed: {}", e.getMessage());
             return ResponseEntity.status(500).body(Map.of(
                 "success", false,
                 "error", e.getMessage()
