@@ -32,9 +32,6 @@ public class EpisodeAutomationController {
 
     private final EpisodeAutomationService episodeAutomationService;
 
-    @Value("${app.automation.allowed-directory:/tmp/episodes}")
-    private String allowedDirectory;
-
     @Value("${app.automation.max-file-size-mb:10}")
     private long maxFileSizeMb;
 

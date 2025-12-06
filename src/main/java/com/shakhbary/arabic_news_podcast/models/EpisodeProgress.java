@@ -1,9 +1,9 @@
 package com.shakhbary.arabic_news_podcast.models;
 
 import org.springframework.data.annotation.CreatedDate;
-
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.OffsetDateTime;
 import java.util.UUID;
 

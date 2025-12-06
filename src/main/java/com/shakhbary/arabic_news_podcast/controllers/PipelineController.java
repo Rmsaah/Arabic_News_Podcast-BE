@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeDto;
-import com.shakhbary.arabic_news_podcast.services.Impl.EpisodeAutomationServiceV2;
+import com.shakhbary.arabic_news_podcast.services.Impl.EpisodeAutomationServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @Slf4j
-public class EpisodeAutomationControllerV2 {
+public class PipelineController {
 
-    private final EpisodeAutomationServiceV2 episodeAutomationService;
+    private final EpisodeAutomationServiceImpl episodeAutomationService;
 
     /**
      * Run the complete automated pipeline

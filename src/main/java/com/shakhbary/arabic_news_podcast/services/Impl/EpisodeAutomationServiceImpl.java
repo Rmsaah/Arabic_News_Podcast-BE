@@ -1,8 +1,5 @@
-/*
 package com.shakhbary.arabic_news_podcast.services.Impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeDto;
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeJsonDto;
 import com.shakhbary.arabic_news_podcast.models.Article;
@@ -12,15 +9,26 @@ import com.shakhbary.arabic_news_podcast.repositories.ArticleRepository;
 import com.shakhbary.arabic_news_podcast.repositories.AudioRepository;
 import com.shakhbary.arabic_news_podcast.repositories.EpisodeRepository;
 import com.shakhbary.arabic_news_podcast.services.EpisodeAutomationService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -31,12 +39,73 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
     private final ArticleRepository articleRepository;
     private final AudioRepository audioRepository;
     private final ObjectMapper objectMapper;
+    private final RestTemplate restTemplate = new RestTemplate();
+    
+    private static final String AGENT_BASE_URL = "http://localhost:8001/api";
+
+    /**
+     * Automated pipeline: Scrape news → Process all → Save to database
+     * Calls Python agent to do all the heavy lifting
+     */
+    @Transactional
+    @Scheduled(cron = "0 0 9 * * *") // CRON expression for 9:00 AM daily
+    public List<EpisodeDto> automatedDailyPipeline() {
+        try {
+            log.info("Starting automated daily pipeline...");
+            
+            // Call Python agent
+            String url = AGENT_BASE_URL + "/scrape-and-process-all";
+            
+                log.info("Calling Python agent: {}", url);
+            ResponseEntity<Map> response = restTemplate.postForEntity(url, null, Map.class);
+            
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                Map<String, Object> body = response.getBody();
+                Boolean success = (Boolean) body.get("success");
+                
+                if (Boolean.TRUE.equals(success)) {
+                    List<Map<String, Object>> episodesData = 
+                        (List<Map<String, Object>>) body.get("episodes");
+                    
+                    log.info("✓ Received {} episodes from agent", episodesData.size());
+                    
+                    List<EpisodeDto> savedEpisodes = new ArrayList<>();
+                    
+                    // Process each episode
+                    for (Map<String, Object> episodeData : episodesData) {
+                        try {
+                            String episodeJson = objectMapper.writeValueAsString(episodeData);
+                            EpisodeDto dto = processEpisodeFromJson(episodeJson);
+                            savedEpisodes.add(dto);
+                            log.info("Saved episode: {}", dto.getTitle());
+                        } catch (Exception e) {
+                            log.error("Error saving episode: {}", e.getMessage());
+                        }
+                    }
+                    
+                    log.info("Pipeline complete: {}/{} episodes saved",
+                        savedEpisodes.size(), episodesData.size());
+                    
+                    return savedEpisodes;
+                } else {
+                    log.error("Agent returned failure");
+                    throw new RuntimeException("Agent processing failed");
+                }
+            } else {
+                log.error("Agent returned non-200 status");
+                throw new RuntimeException("Agent not responding");
+            }
+            
+        } catch (Exception e) {
+            log.error("Error in automated pipeline: {}", e.getMessage());
+            throw new RuntimeException("Automated pipeline failed", e);
+        }
+    }
 
     @Override
     @Transactional
     public List<EpisodeDto> processEpisodesFromJson(String jsonFilePath) {
         try {
-            // Read JSON file
             List<EpisodeJsonDto> episodeJsonList = objectMapper.readValue(
                     new File(jsonFilePath),
                     new TypeReference<List<EpisodeJsonDto>>() {}
@@ -69,19 +138,15 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
     private EpisodeDto processEpisodeData(EpisodeJsonDto jsonDto) {
         log.info("Processing episode with nested entity structure");
 
-        // Validate required nested objects
         validateJsonDto(jsonDto);
 
         try {
-            // 1. Process Article entity
             Article article = processArticleEntity(jsonDto.getArticle());
             log.info("Article created with ID: {}", article.getId());
 
-            //2. Process Audio entity
             Audio audio = processAudioEntity(jsonDto.getAudio(), article);
             log.info("Audio created with ID: {}", audio.getId());
 
-            // 3. Process Episode entity
             Episode episode = processEpisodeEntity(jsonDto.getEpisode(), article, audio);
             log.info("Episode created with ID: {}", episode.getId());
 
@@ -95,11 +160,9 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
         }
     }
 
-    */
-/**
+    /**
      * Validate that all required nested entities are present
-     *//*
-
+     */
     private void validateJsonDto(EpisodeJsonDto jsonDto) {
         if (jsonDto.getArticle() == null) {
             throw new IllegalArgumentException("Article data is required");
@@ -130,11 +193,9 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
         }
     }
 
-    */
-/**
+    /**
      * Process and create Article entity from JSON data
-     *//*
-
+     */
     private Article processArticleEntity(EpisodeJsonDto.ArticleData articleData) {
         try {
             Article article = new Article();
@@ -167,11 +228,9 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
         }
     }
 
-    */
-/**
+    /**
      * Process and create Audio entity from JSON data
-     *//*
-
+     */
     private Audio processAudioEntity(EpisodeJsonDto.AudioData audioData, Article article) {
         try {
             Audio audio = new Audio();
@@ -201,11 +260,9 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
         }
     }
 
-    */
-/**
+    /**
      * Process and create Episode entity from JSON data
-     *//*
-
+     */
     private Episode processEpisodeEntity(EpisodeJsonDto.EpisodeData episodeData, Article article, Audio audio) {
         try {
             Episode episode = new Episode();
@@ -237,11 +294,9 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
         }
     }
 
-    */
-/**
+    /*
      * Convert Episode entity to DTO for API response
-     *//*
-
+     */
     private EpisodeDto convertToDto(Episode episode) {
         return new EpisodeDto(
                 episode.getId(),
@@ -262,4 +317,3 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
         );
     }
 }
-*/

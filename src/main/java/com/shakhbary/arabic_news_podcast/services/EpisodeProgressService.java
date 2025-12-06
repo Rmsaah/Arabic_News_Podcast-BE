@@ -2,8 +2,6 @@ package com.shakhbary.arabic_news_podcast.services;
 
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeProgressDto;
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeProgressUpdateDto;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.UUID;
@@ -44,11 +42,6 @@ public interface EpisodeProgressService {
      * @throws org.springframework.web.server.ResponseStatusException if unauthorized
      */
     List<EpisodeProgressDto> getInProgressEpisodes(String requestingUsername);
-
-    /**
-     * Get completed episodes for a user with pagination
-     */
-    Page<EpisodeProgressDto> getCompletedEpisodes(UUID userId, Pageable pageable);
 
     /**
      * Get analytics data for an episode (average completion, drop-off points).

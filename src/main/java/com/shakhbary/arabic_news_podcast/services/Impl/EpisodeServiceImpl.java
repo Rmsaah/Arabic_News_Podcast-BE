@@ -1,13 +1,8 @@
 package com.shakhbary.arabic_news_podcast.services.Impl;
 
-import com.shakhbary.arabic_news_podcast.dtos.EpisodeCreateRequestDto;
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeDto;
 import com.shakhbary.arabic_news_podcast.exceptions.ResourceNotFoundException;
-import com.shakhbary.arabic_news_podcast.models.Article;
-import com.shakhbary.arabic_news_podcast.models.Audio;
 import com.shakhbary.arabic_news_podcast.models.Episode;
-import com.shakhbary.arabic_news_podcast.repositories.ArticleRepository;
-import com.shakhbary.arabic_news_podcast.repositories.AudioRepository;
 import com.shakhbary.arabic_news_podcast.repositories.EpisodeRepository;
 import com.shakhbary.arabic_news_podcast.repositories.RatingRepository;
 import com.shakhbary.arabic_news_podcast.services.EpisodeService;
@@ -19,7 +14,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Service
@@ -28,8 +22,6 @@ public class EpisodeServiceImpl implements EpisodeService {
 
     private final EpisodeRepository episodeRepository;
     private final RatingRepository ratingRepository;
-    private final ArticleRepository articleRepository;
-    private final AudioRepository audioRepository;
 
     /**
      * Maps Episode entity to EpisodeDto with all fields populated.
@@ -91,46 +83,6 @@ public class EpisodeServiceImpl implements EpisodeService {
         }
 
         return mapToDto(e, false);
-    }
-
-    @Override
-    @Transactional
-    public EpisodeDto createEpisode(EpisodeCreateRequestDto request) {
-        // Validate required audio URL (critical for playback)
-        if (request.getAudioUrlPath() == null || request.getAudioUrlPath().isBlank()) {
-            throw new IllegalArgumentException(
-                    "Audio URL is required for all episodes. " +
-                            "Episodes cannot be created without valid audio files."
-            );
-        }
-
-        Article article = null;
-        if (request.getArticleId() != null) {
-            article = articleRepository.findById(request.getArticleId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Article not found: " + request.getArticleId()));
-        }
-
-        // Create audio entity (required)
-        Audio audio = new Audio();
-        audio.setArticle(article);
-        audio.setDuration(request.getDurationSeconds() != null ? request.getDurationSeconds() : 0L);
-        audio.setFormat(request.getAudioFormat() != null ? request.getAudioFormat() : "mp3");
-        audio.setUrlPath(request.getAudioUrlPath());
-        audio.setCreationDate(OffsetDateTime.now());
-        audio = audioRepository.save(audio);
-
-        Episode episode = new Episode();
-        episode.setArticle(article);
-        episode.setAudio(audio);
-        episode.setTitle(request.getTitle());
-        episode.setDescription(request.getDescription());
-        episode.setScriptUrlPath(request.getScriptUrlPath());
-        episode.setImageUrl(request.getImageUrl());
-        episode.setCreationDate(OffsetDateTime.now());
-
-        episode = episodeRepository.save(episode);
-
-        return new EpisodeDto(episode.getId(), episode.getCreationDate());
     }
 
     @Override

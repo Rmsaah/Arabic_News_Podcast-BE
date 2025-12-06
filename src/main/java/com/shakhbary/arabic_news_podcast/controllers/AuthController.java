@@ -30,8 +30,8 @@ import java.util.Base64;
 public class AuthController {
 
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;  // ADD THIS
-    private final UserRepository userRepository;    // ADD THIS
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
 
     /**
      * Register a new user.
