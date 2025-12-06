@@ -3,8 +3,6 @@ package com.shakhbary.arabic_news_podcast.services.Impl;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,13 +79,6 @@ public class EpisodeProgressServiceImpl implements EpisodeProgressService {
                 .filter(ec -> !ec.isCompleted()) // Only truly in-progress episodes
                 .map(this::convertToDto)
                 .toList();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<EpisodeProgressDto> getCompletedEpisodes(UUID userId, Pageable pageable) {
-        // This would need a new repository method - for now, throw not implemented
-        throw new UnsupportedOperationException("Paginated completed episodes not yet implemented");
     }
 
     @Override

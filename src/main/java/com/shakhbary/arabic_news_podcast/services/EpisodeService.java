@@ -1,6 +1,5 @@
 package com.shakhbary.arabic_news_podcast.services;
 
-import com.shakhbary.arabic_news_podcast.dtos.EpisodeCreateRequestDto;
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,13 +24,6 @@ public interface EpisodeService {
      * @return EpisodeDto containing episode details
      */
     EpisodeDto getEpisode(UUID episodeId);
-
-    /**
-     * Create a new episode from article and audio data
-     * @param request DTO containing episode creation data (article, audio, metadata)
-     * @return Created EpisodeDto with generated ID and timestamps
-     */
-    EpisodeDto createEpisode(EpisodeCreateRequestDto request);
 
     /**
      * Retrieve the most recently created episodes (for daily digest feature)
