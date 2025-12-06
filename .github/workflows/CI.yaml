@@ -21,6 +21,8 @@ jobs:
         with:
           java-version: '23'
           distribution: 'corretto'
+      - name: make mvnw executable
+        run: chmod +x ./mvnw
       - name: Run spotless apply
         run: ./mvnw spotless:apply --batch-mode
       - name: Check for changes
