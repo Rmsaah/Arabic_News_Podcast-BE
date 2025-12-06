@@ -10,10 +10,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class ArabicNewsPodcastBeApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ArabicNewsPodcastBeApplication.class, args);
+  public static void main(String[] args) {
+    SpringApplication.run(ArabicNewsPodcastBeApplication.class, args);
 
-        System.out.println("Arabic News Podcast - BE has been started");
-	}
-
+    System.out.println("Arabic News Podcast - BE has been started");
+  }
 }
