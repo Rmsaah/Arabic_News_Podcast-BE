@@ -15,7 +15,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class CorsConfig {
 
-  @Value("${app.cors.allowed-origins:http://localhost:4200}")
+  @Value("${app.cors.allowed-origins}")
   private String[] allowedOrigins;
 
   @Value("${app.cors.allowed-methods:GET,POST,PUT,DELETE,OPTIONS}")

@@ -37,7 +37,7 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
   private final ObjectMapper objectMapper;
   private final RestTemplate restTemplate = new RestTemplate();
 
-  private static final String AGENT_BASE_URL = "http://localhost:8001/api";
+  private static final String AGENT_BASE_URL = "http://python_service:8001/api";
 
   /**
    * Automated pipeline: Scrape news → Process all → Save to database Calls Python agent to do all
