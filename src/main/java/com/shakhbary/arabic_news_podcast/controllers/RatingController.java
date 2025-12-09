@@ -15,7 +15,11 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/api/ratings")
-@CrossOrigin(origins = "*")
+@CrossOrigin(
+        origins = "*",
+        allowedHeaders = "*",
+        exposedHeaders = "*"
+)
 @RequiredArgsConstructor
 public class RatingController {
 

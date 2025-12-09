@@ -17,7 +17,11 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "*")
+@CrossOrigin(
+        origins = "*",
+        allowedHeaders = "*",
+        exposedHeaders = "*"
+)
 @RequiredArgsConstructor
 public class UserController {
 

@@ -24,7 +24,11 @@ import org.springframework.web.server.ResponseStatusException;
  */
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*")
+@CrossOrigin(
+        origins = "*",
+        allowedHeaders = "*",
+        exposedHeaders = "*"
+)
 @RequiredArgsConstructor
 public class AuthController {
 
