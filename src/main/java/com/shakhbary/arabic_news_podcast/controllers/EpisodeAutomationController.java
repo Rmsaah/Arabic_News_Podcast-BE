@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @RestController
 @RequestMapping("/api/admin/automation")
+@CrossOrigin(origins = "*")
 @Slf4j
 public class EpisodeAutomationController {
 

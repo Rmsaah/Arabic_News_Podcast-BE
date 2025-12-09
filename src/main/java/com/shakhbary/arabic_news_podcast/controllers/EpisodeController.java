@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
  * bulk episode creation with automatic Article/Audio creation, use EpisodeAutomationController.
  */
 @RestController
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class EpisodeController {
 
