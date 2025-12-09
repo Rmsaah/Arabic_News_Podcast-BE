@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/api/progress")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class EpisodeProgressController {
 
