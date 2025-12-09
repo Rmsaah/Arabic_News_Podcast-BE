@@ -57,21 +57,21 @@ public class SecurityConfig {
                     .requestMatchers("/api/home/**")
                     .permitAll() // Homepage content
 
-                    // Admin endpoints - require ADMIN role
-                    .requestMatchers("/api/admin/**")
-                    .hasRole("ADMIN")
-                    .requestMatchers("/admin/**")
-                    .hasRole("ADMIN")
-
-                    // User endpoints - require USER or ADMIN role
-                    .requestMatchers("/api/users/**")
-                    .hasAnyRole("USER", "ADMIN")
-                    .requestMatchers("/api/progress/**")
-                    .hasAnyRole("USER", "ADMIN")
-                    .requestMatchers("/api/ratings/**")
-                    .hasAnyRole("USER", "ADMIN")
-                    .requestMatchers("/user/**")
-                    .hasAnyRole("USER", "ADMIN")
+//                    // Admin endpoints - require ADMIN role
+//                    .requestMatchers("/api/admin/**")
+//                    .hasRole("ADMIN")
+//                    .requestMatchers("/admin/**")
+//                    .hasRole("ADMIN")
+//
+//                    // User endpoints - require USER or ADMIN role
+//                    .requestMatchers("/api/users/**")
+//                    .hasAnyRole("USER", "ADMIN")
+//                    .requestMatchers("/api/progress/**")
+//                    .hasAnyRole("USER", "ADMIN")
+//                    .requestMatchers("/api/ratings/**")
+//                    .hasAnyRole("USER", "ADMIN")
+//                    .requestMatchers("/user/**")
+//                    .hasAnyRole("USER", "ADMIN")
 
                     // All other requests are public (for development)
                     // Change to .authenticated() for production if needed
