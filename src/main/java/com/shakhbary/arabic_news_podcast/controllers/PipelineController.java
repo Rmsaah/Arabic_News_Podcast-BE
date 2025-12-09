@@ -14,11 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/podcast")
-@CrossOrigin(
-        origins = "*",
-        allowedHeaders = "*",
-        exposedHeaders = "*"
-)
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @Slf4j
 public class PipelineController {

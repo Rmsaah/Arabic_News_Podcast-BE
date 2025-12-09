@@ -36,7 +36,7 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
         // Enable CORS for Angular frontend
-//        .cors(cors -> cors.disable())
+        .cors(cors -> cors.configurationSource(corsConfigurationSource))
 
         // Disable CSRF (standard for stateless REST APIs with Basic Auth)
         .csrf(csrf -> csrf.disable())

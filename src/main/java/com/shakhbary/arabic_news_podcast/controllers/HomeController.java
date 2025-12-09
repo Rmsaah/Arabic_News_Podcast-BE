@@ -12,11 +12,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/api/home")
-@CrossOrigin(
-        origins = "*",
-        allowedHeaders = "*",
-        exposedHeaders = "*"
-)
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class HomeController {
 
