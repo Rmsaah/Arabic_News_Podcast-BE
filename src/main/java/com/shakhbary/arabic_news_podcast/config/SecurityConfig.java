@@ -8,6 +8,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,7 +40,7 @@ public class SecurityConfig {
         .cors(cors -> cors.configurationSource(corsConfigurationSource))
 
         // Disable CSRF (standard for stateless REST APIs with Basic Auth)
-        .csrf(csrf -> csrf.disable())
+        .csrf(AbstractHttpConfigurer::disable)
 
         // Configure authorization rules
         .authorizeHttpRequests(
@@ -60,8 +61,6 @@ public class SecurityConfig {
                     // Admin endpoints - require ADMIN role
                     .requestMatchers("/api/admin/**")
                     .hasRole("ADMIN")
-                    .requestMatchers("/admin/**")
-                    .hasRole("ADMIN")
 
                     // User endpoints - require USER or ADMIN role
                     .requestMatchers("/api/users/**")
@@ -69,8 +68,6 @@ public class SecurityConfig {
                     .requestMatchers("/api/progress/**")
                     .hasAnyRole("USER", "ADMIN")
                     .requestMatchers("/api/ratings/**")
-                    .hasAnyRole("USER", "ADMIN")
-                    .requestMatchers("/user/**")
                     .hasAnyRole("USER", "ADMIN")
 
                     // All other requests are public (for development)
