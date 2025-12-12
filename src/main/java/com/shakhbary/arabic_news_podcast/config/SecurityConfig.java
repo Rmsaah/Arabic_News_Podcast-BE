@@ -31,13 +31,13 @@ import org.springframework.web.cors.CorsConfigurationSource;
 public class SecurityConfig {
 
   private final CustomUserDetailsService userDetailsService;
-  private final CorsConfigurationSource corsConfigurationSource;
+  private final CorsConfigurationSource anpCorsConfigSource;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
         // Enable CORS for Angular frontend
-        .cors(cors -> cors.configurationSource(corsConfigurationSource))
+        .cors(cors -> cors.configurationSource(anpCorsConfigSource))
 
         // Disable CSRF (standard for stateless REST APIs with Basic Auth)
         .csrf(AbstractHttpConfigurer::disable)
