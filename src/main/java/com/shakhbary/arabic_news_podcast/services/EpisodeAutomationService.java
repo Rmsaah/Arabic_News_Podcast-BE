@@ -1,5 +1,6 @@
 package com.shakhbary.arabic_news_podcast.services;
 
+import com.shakhbary.arabic_news_podcast.dtos.CreateSampleDto;
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeDto;
 import java.util.List;
 
@@ -14,18 +15,18 @@ import java.util.List;
 public interface EpisodeAutomationService {
 
   /**
-   * Process a batch of episodes from JSON data
+   * Process a batch of episodes from POJO object
    *
-   * @param jsonFilePath Path to JSON file containing episode data
+   * @param createSampleDtoList POJO list that holds the episode data
    * @return List of created episodes
    */
-  List<EpisodeDto> processEpisodesFromJson(String jsonFilePath);
+  List<EpisodeDto> createBulkEpisodes(List<CreateSampleDto> createSampleDtoList);
 
   /**
-   * Process a single episode from JSON object
+   * Process a single episode from POJO object
    *
-   * @param episodeJson JSON string containing episode data
+   * @param createSampleDto POJO that holds the episode data
    * @return Created episode
    */
-  EpisodeDto processEpisodeFromJson(String episodeJson);
+  EpisodeDto createEpisode(CreateSampleDto createSampleDto);
 }

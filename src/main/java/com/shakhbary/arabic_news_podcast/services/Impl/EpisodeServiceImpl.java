@@ -2,6 +2,7 @@ package com.shakhbary.arabic_news_podcast.services.Impl;
 
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeDto;
 import com.shakhbary.arabic_news_podcast.exceptions.ResourceNotFoundException;
+import com.shakhbary.arabic_news_podcast.mappers.EpisodeMapper;
 import com.shakhbary.arabic_news_podcast.models.Episode;
 import com.shakhbary.arabic_news_podcast.repositories.EpisodeRepository;
 import com.shakhbary.arabic_news_podcast.repositories.RatingRepository;
@@ -20,41 +21,32 @@ public class EpisodeServiceImpl implements EpisodeService {
 
   private final EpisodeRepository episodeRepository;
   private final RatingRepository ratingRepository;
+  private final EpisodeMapper episodeMapper;
 
   /**
    * Maps Episode entity to EpisodeDto with all fields populated. This is the single source of truth
    * for episode DTO mapping.
    *
-   * @param e Episode entity to map
+   * @param episode Episode entity to map
    * @param truncateDescription If true, truncates description to 180 characters for list views
    * @return Fully populated EpisodeDto with all 15 fields (including Article metadata)
    */
-  private EpisodeDto mapToDto(Episode e, boolean truncateDescription) {
+  private EpisodeDto mapToDto(Episode episode, boolean truncateDescription) {
+    EpisodeDto episodeDto = episodeMapper.episodeToEpisodeDto(episode);
+
     // Fetch ratings data
-    Double avg = ratingRepository.findAverageRatingForEpisode(e.getId());
-    long count = ratingRepository.countRatingsForEpisode(e.getId());
+    Double avg = ratingRepository.findAverageRatingForEpisode(episode.getId());
+    long count = ratingRepository.countRatingsForEpisode(episode.getId());
+
+    episodeDto.setAverageRating(avg);
+    episodeDto.setRatingCount((int) count);
 
     // Truncate description if requested (for list views)
     String description =
-        truncateDescription ? truncate(e.getDescription(), 180) : e.getDescription();
+        truncateDescription ? truncate(episode.getDescription(), 180) : episode.getDescription();
+    episodeDto.setDescription(description);
 
-    // Use full 15-parameter constructor to ensure all fields are populated
-    return new EpisodeDto(
-        e.getId(),
-        e.getTitle(),
-        description,
-        e.getScriptUrlPath(),
-        e.getAudio() != null ? e.getAudio().getUrlPath() : null,
-        e.getAudio() != null ? e.getAudio().getDuration() : 0L,
-        avg != null ? avg : 0.0,
-        (int) count,
-        e.getCreationDate(),
-        e.getArticle() != null ? e.getArticle().getId() : null,
-        e.getArticle() != null ? e.getArticle().getTitle() : null,
-        e.getArticle() != null ? e.getArticle().getAuthor() : null,
-        e.getArticle() != null ? e.getArticle().getPublisher() : null,
-        e.getArticle() != null ? e.getArticle().getCategory() : null,
-        e.getImageUrl());
+    return episodeDto;
   }
 
   @Override
