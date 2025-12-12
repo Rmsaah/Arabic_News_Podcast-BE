@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateSampleDto {
-	EpisodeDto episodeDto;
-	ArticleDto articleDto;
-	AudioDto audioDto;
+  EpisodeDto episodeDto;
+  ArticleDto articleDto;
+  AudioDto audioDto;
 }

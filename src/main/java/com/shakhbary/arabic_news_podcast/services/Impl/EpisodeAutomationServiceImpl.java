@@ -57,10 +57,8 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
         Boolean success = (Boolean) body.get("success");
 
         if (Boolean.TRUE.equals(success)) {
-          List<CreateSampleDto> episodesFromAgent = objectMapper.convertValue(
-                  body.get("episodes"),
-				  new TypeReference<>() {}
-          );
+          List<CreateSampleDto> episodesFromAgent =
+              objectMapper.convertValue(body.get("episodes"), new TypeReference<>() {});
 
           log.info("Received {} episodes from agent", episodesFromAgent.size());
 
@@ -78,7 +76,9 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
           }
 
           log.info(
-                  "Pipeline complete: {}/{} episodes saved", savedEpisodes.size(), episodesFromAgent.size());
+              "Pipeline complete: {}/{} episodes saved",
+              savedEpisodes.size(),
+              episodesFromAgent.size());
 
           return savedEpisodes;
         } else {
@@ -113,5 +113,4 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
     episode = episodeRepository.save(episode);
     return episodeMapper.episodeToEpisodeDto(episode);
   }
-
 }

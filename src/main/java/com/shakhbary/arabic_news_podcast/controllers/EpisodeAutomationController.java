@@ -3,10 +3,9 @@ package com.shakhbary.arabic_news_podcast.controllers;
 import com.shakhbary.arabic_news_podcast.dtos.CreateSampleDto;
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeDto;
 import com.shakhbary.arabic_news_podcast.services.EpisodeAutomationService;
+import com.shakhbary.arabic_news_podcast.validator.EpisodeAutomationValidator;
 import java.io.IOException;
 import java.util.List;
-
-import com.shakhbary.arabic_news_podcast.validator.EpisodeAutomationValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -37,19 +36,19 @@ public class EpisodeAutomationController {
    */
   @PostMapping("/bulk-create-episodes")
   @ResponseStatus(HttpStatus.CREATED)
-  public ResponseEntity<AutomationResponse> bulkCreateEpisodes(@RequestBody List<CreateSampleDto> createSampleDtoList)
-      throws IOException {
+  public ResponseEntity<AutomationResponse> bulkCreateEpisodes(
+      @RequestBody List<CreateSampleDto> createSampleDtoList) throws IOException {
 
     // Validation
     episodeAutomationValidator.validateBulkCreation(createSampleDtoList);
 
     // Process episode creation
-    List<EpisodeDto> createdEpisodes = episodeAutomationService.createBulkEpisodes(createSampleDtoList);
+    List<EpisodeDto> createdEpisodes =
+        episodeAutomationService.createBulkEpisodes(createSampleDtoList);
     return ResponseEntity.status(HttpStatus.CREATED)
-            .body(
-                    new AutomationResponse(
-                            "Successfully processed " + createdEpisodes.size() + " episodes",
-                            createdEpisodes));
+        .body(
+            new AutomationResponse(
+                "Successfully processed " + createdEpisodes.size() + " episodes", createdEpisodes));
   }
 
   /**
@@ -60,7 +59,8 @@ public class EpisodeAutomationController {
    */
   @PostMapping("/create-episode")
   @ResponseStatus(HttpStatus.CREATED)
-  public ResponseEntity<AutomationResponse> createEpisode(@RequestBody CreateSampleDto createSampleDto) {
+  public ResponseEntity<AutomationResponse> createEpisode(
+      @RequestBody CreateSampleDto createSampleDto) {
 
     episodeAutomationValidator.validateSingleEpisodeCreation(createSampleDto);
 
