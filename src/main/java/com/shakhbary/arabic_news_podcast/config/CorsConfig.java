@@ -30,7 +30,7 @@ public class CorsConfig {
   @Value("${app.cors.max-age:3600}")
   private long maxAge;
 
-  @Bean
+  @Bean(name = "anpCorsConfigSource")
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
 
