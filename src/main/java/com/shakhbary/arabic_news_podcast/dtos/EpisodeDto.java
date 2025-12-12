@@ -12,11 +12,12 @@ public class EpisodeDto {
   private String title;
   private String description;
   private String scriptUrlPath;
+  private String imageUrl;
+  private OffsetDateTime creationDate;
+
+  // Audio reference fields
   private String audioUrlPath;
   private long durationSeconds;
-  private double averageRating;
-  private int ratingCount;
-  private OffsetDateTime creationDate;
 
   // Article reference fields
   private UUID articleId;
@@ -25,14 +26,7 @@ public class EpisodeDto {
   private String articlePublisher; // Publisher of the source article
   private String articleCategory; // Category of the source article
 
-  private String imageUrl;
-
-  /**
-   * Simplified constructor for creation response. Returns only the ID and creation timestamp after
-   * successfully creating an episode.
-   */
-  public EpisodeDto(UUID id, OffsetDateTime creationDate) {
-    this.id = id;
-    this.creationDate = creationDate;
-  }
+  // Calculated fields
+  private double averageRating;
+  private int ratingCount;
 }
