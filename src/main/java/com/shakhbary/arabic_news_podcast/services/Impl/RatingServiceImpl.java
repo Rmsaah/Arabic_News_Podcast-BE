@@ -2,6 +2,7 @@ package com.shakhbary.arabic_news_podcast.services.Impl;
 
 import com.shakhbary.arabic_news_podcast.dtos.RatingResponseDto;
 import com.shakhbary.arabic_news_podcast.exceptions.ResourceNotFoundException;
+import com.shakhbary.arabic_news_podcast.mappers.RatingMapper;
 import com.shakhbary.arabic_news_podcast.models.Episode;
 import com.shakhbary.arabic_news_podcast.models.Rating;
 import com.shakhbary.arabic_news_podcast.models.User;
@@ -22,43 +23,50 @@ public class RatingServiceImpl implements RatingService {
   private final RatingRepository ratingRepository;
   private final UserRepository userRepository;
   private final EpisodeRepository episodeRepository;
+  private final RatingMapper ratingMapper;
 
   @Override
   @Transactional
   public RatingResponseDto rateEpisode(UUID episodeId, int ratingValue, String requestingUsername) {
-    if (ratingValue < 1 || ratingValue > 5) {
-      throw new IllegalArgumentException("Rating must be between 1 and 5");
-    }
-    User user =
-        userRepository
-            .findByUsername(requestingUsername)
-            .orElseThrow(
-                () -> new ResourceNotFoundException("User not found: " + requestingUsername));
 
-    Episode episode =
-        episodeRepository
-            .findById(episodeId)
-            .orElseThrow(() -> new ResourceNotFoundException("Episode not found: " + episodeId));
+    User user = findByUsername(requestingUsername);
+    Episode episode = findByEpisodeId(episodeId);
 
-    Rating rating = ratingRepository.findByUserAndEpisode(user.getId(), episodeId);
-    boolean isUpdate = rating != null;
+    Rating rating = findOrCreateRating(user, episode);
+    boolean isUpdate = rating.getId() != null;
+
+    rating.setRating(ratingValue);
+    rating.setRatingDate(OffsetDateTime.now());
+    rating = ratingRepository.save(rating);
+
+    RatingResponseDto responseDto = ratingMapper.ratingToRatingResponseDto(rating);
+    responseDto.setMessage(
+        isUpdate ? "Rating updated successfully" : "Rating created successfully");
+
+    return responseDto;
+  }
+
+  private User findByUsername(String username) {
+    return userRepository
+        .findByUsername(username)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
+  }
+
+  private Episode findByEpisodeId(UUID episodeId) {
+    return episodeRepository
+        .findById(episodeId)
+        .orElseThrow(() -> new ResourceNotFoundException("Episode not found: " + episodeId));
+  }
+
+  private Rating findOrCreateRating(User user, Episode episode) {
+    Rating rating = ratingRepository.findByUserAndEpisode(user.getId(), episode.getId());
 
     if (rating == null) {
       rating = new Rating();
       rating.setUser(user);
       rating.setEpisode(episode);
     }
-    rating.setRating(ratingValue);
-    rating.setRatingDate(OffsetDateTime.now());
 
-    rating = ratingRepository.save(rating);
-
-    String message = isUpdate ? "Rating updated successfully" : "Rating created successfully";
-    return new RatingResponseDto(
-        rating.getId(),
-        rating.getUser().getId(),
-        rating.getEpisode().getId(),
-        rating.getRating(),
-        message);
+    return rating;
   }
 }
