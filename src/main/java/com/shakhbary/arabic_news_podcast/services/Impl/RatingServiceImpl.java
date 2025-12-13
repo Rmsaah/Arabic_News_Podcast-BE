@@ -40,22 +40,22 @@ public class RatingServiceImpl implements RatingService {
     rating = ratingRepository.save(rating);
 
     RatingResponseDto responseDto = ratingMapper.ratingToRatingResponseDto(rating);
-    responseDto.setMessage(isUpdate ? "Rating updated successfully" : "Rating created successfully");
+    responseDto.setMessage(
+        isUpdate ? "Rating updated successfully" : "Rating created successfully");
 
     return responseDto;
   }
 
   private User findByUsername(String username) {
     return userRepository
-            .findByUsername(username)
-            .orElseThrow(
-                    () -> new ResourceNotFoundException("User not found: " + username));
+        .findByUsername(username)
+        .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
   }
 
   private Episode findByEpisodeId(UUID episodeId) {
     return episodeRepository
-            .findById(episodeId)
-            .orElseThrow(() -> new ResourceNotFoundException("Episode not found: " + episodeId));
+        .findById(episodeId)
+        .orElseThrow(() -> new ResourceNotFoundException("Episode not found: " + episodeId));
   }
 
   private Rating findOrCreateRating(User user, Episode episode) {

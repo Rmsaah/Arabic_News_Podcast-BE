@@ -7,8 +7,8 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface RatingMapper {
-    @Mapping(source = "id", target = "ratingId")
-    @Mapping(source = "user.id", target = "userId")
-    @Mapping(source = "episode.id", target = "episodeId")
-    RatingResponseDto ratingToRatingResponseDto(Rating rating);
+  @Mapping(source = "id", target = "ratingId")
+  @Mapping(source = "user.id", target = "userId")
+  @Mapping(source = "episode.id", target = "episodeId")
+  RatingResponseDto ratingToRatingResponseDto(Rating rating);
 }
