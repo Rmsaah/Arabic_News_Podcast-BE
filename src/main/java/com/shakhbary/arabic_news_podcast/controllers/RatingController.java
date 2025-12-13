@@ -3,7 +3,7 @@ package com.shakhbary.arabic_news_podcast.controllers;
 import com.shakhbary.arabic_news_podcast.dtos.RatingRequestDto;
 import com.shakhbary.arabic_news_podcast.dtos.RatingResponseDto;
 import com.shakhbary.arabic_news_podcast.services.RatingService;
-import jakarta.validation.Valid;
+import com.shakhbary.arabic_news_podcast.validator.RatingValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class RatingController {
 
   private final RatingService ratingService;
+  private final RatingValidator ratingValidator;
 
   /**
    * Submit a rating for an episode. Users can rate episodes from 1 (lowest) to 5 (highest). If a
@@ -32,7 +33,12 @@ public class RatingController {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public RatingResponseDto rateEpisode(
-      @RequestBody @Valid RatingRequestDto request, Authentication authentication) {
+      @RequestBody RatingRequestDto request, Authentication authentication) {
+
+    // Validation
+    ratingValidator.validateRatingRequest(request);
+
+    // Rate Episode
     return ratingService.rateEpisode(
         request.episodeId(), request.rating(), authentication.getName());
   }
