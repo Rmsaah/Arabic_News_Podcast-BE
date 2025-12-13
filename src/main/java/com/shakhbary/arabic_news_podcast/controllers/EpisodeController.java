@@ -49,7 +49,7 @@ public class EpisodeController {
    * @return Episode details
    */
   @GetMapping("/api/episodes/{id}")
-  public EpisodeDto getEpisode(@PathVariable("id") UUID id) {
+  public EpisodeDto getEpisode(@PathVariable(name = "id") UUID id) {
     return episodeService.getEpisode(id);
   }
 
