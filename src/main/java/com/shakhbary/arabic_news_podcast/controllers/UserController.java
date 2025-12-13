@@ -31,7 +31,7 @@ public class UserController {
    * @return User information
    */
   @GetMapping("/{id}")
-  public UserDto getUser(@PathVariable("id") UUID id, Authentication authentication) {
+  public UserDto getUser(@PathVariable(name = "id") UUID id, Authentication authentication) {
     return userService.getUser(id, authentication.getName());
   }
 
@@ -46,7 +46,7 @@ public class UserController {
    */
   @PatchMapping("/{id}")
   public UserDto updateUserName(
-      @PathVariable("id") UUID id,
+      @PathVariable(name = "id") UUID id,
       @RequestBody @Valid UpdateUserDto updateDto,
       Authentication authentication) {
 
@@ -65,7 +65,7 @@ public class UserController {
    * @return Complete user profile with stats
    */
   @GetMapping("/{id}/profile")
-  public UserProfileDto getProfile(@PathVariable("id") UUID id, Authentication authentication) {
+  public UserProfileDto getProfile(@PathVariable(name = "id") UUID id, Authentication authentication) {
     return userProfileService.getUserProfile(id, authentication.getName());
   }
 }

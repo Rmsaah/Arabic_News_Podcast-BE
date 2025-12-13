@@ -61,7 +61,7 @@ public class EpisodeProgressController {
    */
   @GetMapping("/episodes/{episodeId}")
   public EpisodeProgressDto getEpisodeProgress(
-      @PathVariable UUID episodeId, Authentication authentication) {
+      @PathVariable(name = "episodeId") UUID episodeId, Authentication authentication) {
 
     return episodeProgressService.getProgress(episodeId, authentication.getName());
   }
@@ -106,7 +106,7 @@ public class EpisodeProgressController {
   @PostMapping("/episodes/{episodeId}/track-listening")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void trackListeningTime(
-      @PathVariable UUID episodeId,
+      @PathVariable(name = "episodeId") UUID episodeId,
       @RequestParam(name = "secondsListened") Long secondsListened,
       Authentication authentication) {
 
@@ -124,7 +124,7 @@ public class EpisodeProgressController {
   @PostMapping("/episodes/{episodeId}/position")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void updateEpisodePosition(
-      @PathVariable UUID episodeId,
+      @PathVariable(name = "episodeId") UUID episodeId,
       @RequestParam(name = "positionSeconds") Long positionSeconds,
       Authentication authentication) {
 
@@ -142,7 +142,7 @@ public class EpisodeProgressController {
   @PostMapping("/episodes/{episodeId}/complete")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void markEpisodeCompleted(
-      @PathVariable UUID episodeId,
+      @PathVariable(name = "episodeId") UUID episodeId,
       @RequestParam(name = "positionSeconds") Long positionSeconds,
       Authentication authentication) {
 
