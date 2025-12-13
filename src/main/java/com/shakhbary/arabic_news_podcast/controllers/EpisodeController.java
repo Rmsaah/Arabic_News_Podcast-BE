@@ -35,7 +35,8 @@ public class EpisodeController {
    */
   @GetMapping("/api/episodes")
   public Page<EpisodeDto> listEpisodes(
-      @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "20") Integer size) {
+      @RequestParam(defaultValue = "0") Integer page,
+      @RequestParam(defaultValue = "20") Integer size) {
     log.info("Listing episodes. Received parameters - page: {}, size: {}", page, size);
     Pageable pageable = PageRequest.of(page, Math.min(size, 100));
     return episodeService.listEpisodes(pageable);
@@ -67,8 +68,12 @@ public class EpisodeController {
       @RequestParam(required = false) String category,
       @RequestParam(defaultValue = "0") Integer page,
       @RequestParam(defaultValue = "20") Integer size) {
-    log.info("Searching episodes. Parameters - title: '{}', category: '{}', page: {}, size: {}",
-            title, category, page, size);
+    log.info(
+        "Searching episodes. Parameters - title: '{}', category: '{}', page: {}, size: {}",
+        title,
+        category,
+        page,
+        size);
     Pageable pageable = PageRequest.of(page, Math.min(size, 100));
     return episodeService.searchEpisodes(title, category, pageable);
   }
