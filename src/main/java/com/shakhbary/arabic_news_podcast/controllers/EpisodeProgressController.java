@@ -107,7 +107,7 @@ public class EpisodeProgressController {
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void trackListeningTime(
       @PathVariable UUID episodeId,
-      @RequestParam long secondsListened,
+      @RequestParam(name = "secondsListened") Long secondsListened,
       Authentication authentication) {
 
     userProfileService.trackListeningTime(secondsListened, authentication.getName());
@@ -125,7 +125,7 @@ public class EpisodeProgressController {
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void updateEpisodePosition(
       @PathVariable UUID episodeId,
-      @RequestParam long positionSeconds,
+      @RequestParam(name = "positionSeconds") Long positionSeconds,
       Authentication authentication) {
 
     userProfileService.updateEpisodeProgress(episodeId, positionSeconds, authentication.getName());
@@ -143,7 +143,7 @@ public class EpisodeProgressController {
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void markEpisodeCompleted(
       @PathVariable UUID episodeId,
-      @RequestParam long positionSeconds,
+      @RequestParam(name = "positionSeconds") Long positionSeconds,
       Authentication authentication) {
 
     userProfileService.markEpisodeCompleted(episodeId, positionSeconds, authentication.getName());
