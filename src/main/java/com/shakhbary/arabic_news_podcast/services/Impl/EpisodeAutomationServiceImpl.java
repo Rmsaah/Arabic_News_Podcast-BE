@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -34,7 +35,8 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
   private final EpisodeMapper episodeMapper;
   private final RestTemplate restTemplate = new RestTemplate();
 
-  private static final String AGENT_BASE_URL = "http://localhost:8001/api";
+  @Value("${agent.base.url}")
+  private String AGENT_BASE_URL;
 
   /**
    * Automated pipeline: Scrape news → Process all → Save to database Calls Python agent to do all
