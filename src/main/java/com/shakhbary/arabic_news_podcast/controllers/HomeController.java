@@ -27,7 +27,7 @@ public class HomeController {
    * @return List of daily featured episodes
    */
   @GetMapping("/daily")
-  public List<EpisodeDto> daily(@RequestParam(defaultValue = "5") Integer limit) {
+  public List<EpisodeDto> daily(@RequestParam(defaultValue = "5", name = "limit") Integer limit) {
     log.info("Getting daily featured episodes. limit is: {}", limit);
     if (limit == null) {
       limit = 5;
