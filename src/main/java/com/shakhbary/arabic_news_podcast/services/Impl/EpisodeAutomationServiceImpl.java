@@ -110,8 +110,10 @@ public class EpisodeAutomationServiceImpl implements EpisodeAutomationService {
   @Transactional
   public EpisodeDto createEpisode(CreateSampleDto createSampleDto) {
     Episode episode = episodeMapper.sampleEpisodeToEpisode(createSampleDto);
-    episode.setAudio(audioRepository.save(episode.getAudio()));
     episode.setArticle(articleRepository.save(episode.getArticle()));
+    episode.getAudio().setEpisode(episode);
+    episode.getAudio().setArticle(episode.getArticle());
+    episode.setAudio(audioRepository.save(episode.getAudio()));
     episode = episodeRepository.save(episode);
     return episodeMapper.episodeToEpisodeDto(episode);
   }

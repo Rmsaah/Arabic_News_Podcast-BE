@@ -38,7 +38,7 @@ public class EpisodeServiceImpl implements EpisodeService {
     Double avg = ratingRepository.findAverageRatingForEpisode(episode.getId());
     long count = ratingRepository.countRatingsForEpisode(episode.getId());
 
-    episodeDto.setAverageRating(avg);
+    episodeDto.setAverageRating(avg == null ? 0.0 : avg);
     episodeDto.setRatingCount((int) count);
 
     // Truncate description if requested (for list views)
