@@ -4,6 +4,7 @@ import com.shakhbary.arabic_news_podcast.dtos.EpisodeDto;
 import com.shakhbary.arabic_news_podcast.services.EpisodeService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/home")
 @RequiredArgsConstructor
+@Slf4j
 public class HomeController {
 
   private final EpisodeService episodeService;
@@ -25,7 +27,11 @@ public class HomeController {
    * @return List of daily featured episodes
    */
   @GetMapping("/daily")
-  public List<EpisodeDto> daily(@RequestParam(defaultValue = "5") int limit) {
+  public List<EpisodeDto> daily(@RequestParam(defaultValue = "5") Integer limit) {
+    log.info("Getting daily featured episodes. limit is: {}", limit);
+    if (limit == null) {
+      limit = 5;
+    }
     int safeLimit = Math.min(Math.max(limit, 1), 10);
     return episodeService.listDailyEpisodes(safeLimit);
   }
