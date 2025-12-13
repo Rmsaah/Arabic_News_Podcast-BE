@@ -3,10 +3,9 @@ package com.shakhbary.arabic_news_podcast.mappers;
 import com.shakhbary.arabic_news_podcast.dtos.CreateSampleDto;
 import com.shakhbary.arabic_news_podcast.dtos.EpisodeDto;
 import com.shakhbary.arabic_news_podcast.models.Episode;
+import java.time.OffsetDateTime;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
-import java.time.OffsetDateTime;
 
 @Mapper(componentModel = "spring", imports = OffsetDateTime.class)
 public interface EpisodeMapper {

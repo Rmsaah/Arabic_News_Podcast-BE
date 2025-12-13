@@ -54,8 +54,10 @@ public class EpisodeServiceImpl implements EpisodeService {
   @Override
   @Transactional(readOnly = true)
   public Page<EpisodeDto> listEpisodes(Pageable pageable) {
-    log.info("Listing episodes with pageable: page={}, size={}",
-            pageable.getPageNumber(), pageable.getPageSize());
+    log.info(
+        "Listing episodes with pageable: page={}, size={}",
+        pageable.getPageNumber(),
+        pageable.getPageSize());
 
     Page<Episode> episodes = episodeRepository.findAll(pageable);
     log.info("Retrieved {} episodes from database", episodes.getTotalElements());
@@ -115,8 +117,12 @@ public class EpisodeServiceImpl implements EpisodeService {
   @Transactional(readOnly = true)
   public Page<EpisodeDto> searchEpisodes(String title, String category, Pageable pageable) {
 
-    log.info("Searching episodes with title='{}', category='{}', page={}, size={}",
-            title, category, pageable.getPageNumber(), pageable.getPageSize());
+    log.info(
+        "Searching episodes with title='{}', category='{}', page={}, size={}",
+        title,
+        category,
+        pageable.getPageNumber(),
+        pageable.getPageSize());
 
     Page<Episode> result =
         episodeRepository.search(
@@ -124,8 +130,10 @@ public class EpisodeServiceImpl implements EpisodeService {
             (category == null || category.isBlank()) ? null : category,
             pageable);
 
-    log.info("Search returned {} episodes (total: {})",
-            result.getNumberOfElements(), result.getTotalElements());
+    log.info(
+        "Search returned {} episodes (total: {})",
+        result.getNumberOfElements(),
+        result.getTotalElements());
 
     return result.map(e -> mapToDto(e, true));
   }

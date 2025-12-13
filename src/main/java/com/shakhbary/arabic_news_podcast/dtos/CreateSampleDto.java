@@ -9,8 +9,10 @@ import lombok.Setter;
 public class CreateSampleDto {
   @JsonProperty("episode")
   EpisodeDto episodeDto;
+
   @JsonProperty("article")
   ArticleDto articleDto;
+
   @JsonProperty("audio")
   AudioDto audioDto;
 }
