@@ -4,6 +4,7 @@ import com.shakhbary.arabic_news_podcast.dtos.EpisodeDto;
 import com.shakhbary.arabic_news_podcast.services.EpisodeService;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class EpisodeController {
 
   private final EpisodeService episodeService;
@@ -33,7 +35,9 @@ public class EpisodeController {
    */
   @GetMapping("/api/episodes")
   public Page<EpisodeDto> listEpisodes(
-      @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
+      @RequestParam(defaultValue = "0") Integer page,
+      @RequestParam(defaultValue = "20") Integer size) {
+    log.info("Listing episodes. Received parameters - page: {}, size: {}", page, size);
     Pageable pageable = PageRequest.of(page, Math.min(size, 100));
     return episodeService.listEpisodes(pageable);
   }
@@ -62,8 +66,14 @@ public class EpisodeController {
   public Page<EpisodeDto> search(
       @RequestParam(required = false) String title,
       @RequestParam(required = false) String category,
-      @RequestParam(defaultValue = "0") int page,
-      @RequestParam(defaultValue = "20") int size) {
+      @RequestParam(defaultValue = "0") Integer page,
+      @RequestParam(defaultValue = "20") Integer size) {
+    log.info(
+        "Searching episodes. Parameters - title: '{}', category: '{}', page: {}, size: {}",
+        title,
+        category,
+        page,
+        size);
     Pageable pageable = PageRequest.of(page, Math.min(size, 100));
     return episodeService.searchEpisodes(title, category, pageable);
   }
