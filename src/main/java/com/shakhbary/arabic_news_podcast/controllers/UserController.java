@@ -65,7 +65,8 @@ public class UserController {
    * @return Complete user profile with stats
    */
   @GetMapping("/{id}/profile")
-  public UserProfileDto getProfile(@PathVariable(name = "id") UUID id, Authentication authentication) {
+  public UserProfileDto getProfile(
+      @PathVariable(name = "id") UUID id, Authentication authentication) {
     return userProfileService.getUserProfile(id, authentication.getName());
   }
 }
