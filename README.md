@@ -21,10 +21,10 @@ The diagram below illustrates the high-level workflow and component interaction,
 ### Backend (Spring Boot)
 The core REST API service built with Spring Boot that handles.<br/>
 **Key features**:
-- Models/Entities: Audio, Article, Episode, EpisodeProgress, Rating, Role, User `(located in src/main/java/com/yourdomain/models/)`
-- Controllers: REST endpoints for CRUD operations `(located in src/main/java/com/yourdomain/controllers/)`
-- Services: Business logic layer `(located in src/main/java/com/yourdomain/services/)`
-- Repositories: JPA data access layer `(located in src/main/java/com/yourdomain/repositories/)`
+- Models/Entities: Audio, Article, Episode, EpisodeProgress, Rating, Role, User `(located in src/main/java/com/shakhbary/models/)`
+- Controllers: REST endpoints for CRUD operations `(located in src/main/java/com/shakhbary/controllers/)`
+- Services: Business logic layer `(located in src/main/java/com/shakhbary/services/)`
+- Repositories: JPA data access layer `(located in src/main/java/com/shakhbary/repositories/)`
 - Configuration: Application settings in `src/main/resources/application.properties`
 
 Key features include user authentication, episode management, rating system, and cloud storage path references for AI-generated content.
@@ -75,8 +75,8 @@ The backend exposes RESTful endpoints consumed by the Angular frontend, manages 
 The backend is configured using environment variables.
 1. **Clone the repository:**
 ```
-git clone https://github.com/yourusername/3ulum-alyawm-backend.git
-cd 3ulum-alyawm-backend
+git clone https://github.com/Rmsaah/Arabic_News_Podcast-BE.git
+cd Arabic_News_Podcast-BE
 ```
 2. **Configure Database Connection** in `src/main/resources/application.properties`
 ```
@@ -102,9 +102,10 @@ The project includes a Dockerfile for easy containerization of the Spring Boot b
 ```
 docker build -t 3ulum-alyawm-backend .
 ```
+
+>[!NOTE]  
+> You must properly set environment variables (e.g., database connection strings) when running in Docker, especially for external services.
 2. **Run the Docker Container**
 ```
 docker run -d -p 8080:8080 --name 3ulum-alyawm --env SPRING_DATASOURCE_URL='your_external_db_url' 3ulum-alyawm-backend
 ```
->[!NOTE]  
-> You must properly set environment variables (e.g., database connection strings) when running in Docker, especially for external services.
