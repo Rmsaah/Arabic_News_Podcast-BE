@@ -1,111 +1,134 @@
-# 3ulum-Alyawm
+# 3ulum Al-Yawm — Backend
 
-A Spring Boot backend service for a podcast episodes platform that transforms daily news from newspaper sources into AI-generated audio content in the Najdi dialect. The platform leverages Agentic AI with LLM capabilities to process and structure news articles, then converts them into high-quality audio episodes using TTS technology, making news consumption accessible through listening rather than reading.
-## Table of Contents
-- [System Components](#system-components)
-  - [Backend (Spring Boot)](#backend-spring-boot)
-  - [Frontend (Angular)](#frontend-angular)
-  - [Python Agent Integration App](#python-agent-integration-app)
-  - [Python TTS Fine-tuning App](#python-tts-fine-tuning-app)
-- [System Architecture](#system-architecture)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Configuration](#configuration)
-  - [Run Locally](#run-locally)
-- [Docker](#docker)
+Spring Boot REST API for **3ulum Al-Yawm**, an Arabic news podcast platform. The service stores podcast episodes and article metadata, manages users and listening activity, and connects to the AI agent service that turns daily Arabic news into Najdi-dialect audio.
 
-## System Components
-The diagram below illustrates the high-level workflow and component interaction, specifically detailing the content generation pipeline from raw news to the final audio episode delivered to the user.
-![System Components](assets/System_Components.png)
+## Project suite
 
-### Backend (Spring Boot)
-The core REST API service built with Spring Boot that handles.<br/>
-**Key features**:
-- Models/Entities: Audio, Article, Episode, EpisodeProgress, Rating, Role, User `(located in src/main/java/com/shakhbary/models/)`
-- Controllers: REST endpoints for CRUD operations `(located in src/main/java/com/shakhbary/controllers/)`
-- Services: Business logic layer `(located in src/main/java/com/shakhbary/services/)`
-- Repositories: JPA data access layer `(located in src/main/java/com/shakhbary/repositories/)`
-- Configuration: Application settings in `src/main/resources/application.properties`
+- **Backend (this repository):** API, authentication, persistence, and pipeline orchestration
+- [Frontend](https://github.com/Rmsaah/Arabic_News_Podcast-FE): Angular web application
+- [AI and TTS agent](https://github.com/madaweehath/tts-agent-project): scraping, dialect conversion, classification, and speech generation
+- [Najdi XTTS v2](https://github.com/wasanalmansour480-oss/Najdi-XTTS-v2): TTS fine-tuning project
 
-Key features include user authentication, episode management, rating system, and cloud storage path references for AI-generated content.
+![System components](assets/System_Components.png)
 
-### Frontend (Angular)
-The user interface is built using Angular. It provides a rich, single-page application experience for users to browse, play, and rate episodes. The frontend consumes the RESTful APIs exposed by this Spring Boot backend.<br/>
-**Key features**:
-- Home page displaying daily news episodes
-- Episodes list, showing all episodes
-- User profile with listening statistics and history
-- Responsive design for seamless user experience
+## Features
 
-**Repository**: [Arabic_News_Podcast-FE](https://github.com/Rmsaah/Arabic_News_Podcast-FE)
+- Public episode browsing, search, and daily featured episodes
+- User registration and HTTP Basic authentication
+- User profiles, listening progress, history, and statistics
+- Episode ratings
+- Role-based access for `USER` and `ADMIN`
+- Automated episode creation through the Python agent service
+- MySQL persistence with Flyway migrations
+- Configurable CORS for the Angular frontend
 
-### Python Agent Integration App
-**Key features**:
-- Generates script content for podcast episodes 
-- Generates audio from generated episode script 
-- Agentic AI governing the content generation process 
-- Integrates via REST API
+## Technology
 
-**Repository**: [tts-agent-project](https://github.com/madaweehath/tts-agent-project)
+- Java 21
+- Spring Boot 3.5
+- Spring Web, Spring Data JPA, Spring Security, and Validation
+- MySQL 8+
+- Flyway
+- Maven
+- MapStruct and Lombok
 
-### Python TTS Fine-tuning App
-Fine-tuning codebase for training the Text-to-Speech model on the Najdi dialect.<br/>
-**Key features**:
-- Contains training scripts for XTTSv2 model fine-tuning
-- Used during development phase to create the TTS model deployed in production
+## Architecture
 
-**Repository**: [Najdi-XTTS-v2](https://github.com/wasanalmansour480-oss/Najdi-XTTS-v2)
+![System architecture](assets/System_Architecture.png)
 
-## System Architecture
-This project follows the MVC (Model-View-Controller) architecture pattern with a clear separation between backend and frontend.
+The Angular client calls this API. The backend persists application data in MySQL and invokes the Python agent at `AGENT_BASE_URL` to generate episode metadata and media URLs.
 
-![System Architecture](assets/System_Architecture.png)
+## Getting started
 
-The backend exposes RESTful endpoints consumed by the Angular frontend, manages podcast episodes, user profiles, and integrates with Python-based AI models for content generation.
-
-## Getting Started
 ### Prerequisites
-- Java Development Kit (JDK): Version 17 or higher
-- Maven: Build automation tool
-- MySQL: Version 8 or higher 
-- Docker: For containerization (optional but recommended)
-- Git: Version control
 
-### Configuration
-The backend is configured using environment variables.
-1. **Clone the repository:**
-```
+- JDK 21
+- MySQL 8+
+- The included Maven wrapper, or Maven 3.9+
+- The [AI and TTS agent](https://github.com/madaweehath/tts-agent-project) when running the generation pipeline
+
+### 1. Clone the repository
+
+```bash
 git clone https://github.com/Rmsaah/Arabic_News_Podcast-BE.git
 cd Arabic_News_Podcast-BE
 ```
-2. **Configure Database Connection** in `src/main/resources/application.properties`
-```
-spring.datasource.url=jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}
-spring.datasource.username=${MYSQL_USERNAME}
-spring.datasource.password=${MYSQL_PASSWORD}
-```
-3. **Configure Python Service Endpoint** in `src/main/resources/application.properties`
-```
-agent.base.url=${AGENT_BASE_URL:http://localhost:8001/api}
+
+### 2. Configure the environment
+
+Required variables:
+
+- `MYSQL_HOST` — MySQL host, such as `localhost`
+- `MYSQL_PORT` — MySQL port, usually `3306`
+- `MYSQL_DATABASE` — database name
+- `MYSQL_USERNAME` — database user
+- `MYSQL_PASSWORD` — database password
+
+Optional variables:
+
+- `AGENT_BASE_URL` — agent API base URL; defaults to `http://localhost:8001/api`
+- `ALLOWED_ORIGINS` — comma-separated frontend origins; defaults to `http://localhost:4200,http://localhost:3000`
+- `SHOW_SQL`, `SQL_LOGGING_LEVEL`, and `JDBC_BIND_LOGGING_LEVEL` — SQL diagnostics
+
+PowerShell example:
+
+```powershell
+$env:MYSQL_HOST = "localhost"
+$env:MYSQL_PORT = "3306"
+$env:MYSQL_DATABASE = "arabic_news_podcast"
+$env:MYSQL_USERNAME = "root"
+$env:MYSQL_PASSWORD = "your_password"
 ```
 
-### Run Locally
-**Using Maven**
-```
-./mvnw clean install
+Flyway creates and updates the schema when the application starts.
+
+### 3. Run the API
+
+```bash
 ./mvnw spring-boot:run
 ```
 
-## Docker
-The project includes a Dockerfile for easy containerization of the Spring Boot backend service.
-1. **Build the Docker Image**
-```
-docker build -t 3ulum-alyawm-backend .
+On Windows:
+
+```powershell
+.\mvnw.cmd spring-boot:run
 ```
 
->[!NOTE]  
-> You must properly set environment variables (e.g., database connection strings) when running in Docker, especially for external services.
-2. **Run the Docker Container**
+The API runs at `http://localhost:8283`.
+
+## Main endpoints
+
+- `POST /api/auth/register` and `POST /api/auth/login`
+- `GET /api/episodes` and `GET /api/episodes/{id}`
+- `GET /api/episodes/search`
+- `GET /api/home/daily`
+- `/api/users/**`, `/api/progress/**`, and `/api/ratings/**`
+- `POST /api/admin/automation/create-episode`
+- `POST /api/admin/automation/bulk-create-episodes`
+- `POST /api/podcast/run-daily-pipeline`
+
+Episode and home reads are public. Profile, progress, and rating operations require a user login; admin automation endpoints require the `ADMIN` role.
+
+## Docker
+
+```bash
+docker build -t 3ulum-alyawm-backend .
+docker run --rm -p 8283:8283 \
+  -e MYSQL_HOST=host.docker.internal \
+  -e MYSQL_PORT=3306 \
+  -e MYSQL_DATABASE=arabic_news_podcast \
+  -e MYSQL_USERNAME=root \
+  -e MYSQL_PASSWORD=your_password \
+  -e AGENT_BASE_URL=http://host.docker.internal:8001/api \
+  3ulum-alyawm-backend
 ```
-docker run -d -p 8080:8080 --name 3ulum-alyawm --env SPRING_DATASOURCE_URL='your_external_db_url' 3ulum-alyawm-backend
+
+> The Spring application listens on port `8283`. Provide production secrets through your deployment platform rather than committing them.
+
+## Tests and formatting
+
+```bash
+./mvnw test
+./mvnw spotless:check
+./mvnw spotless:apply
 ```
